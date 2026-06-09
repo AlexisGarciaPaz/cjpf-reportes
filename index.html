@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1f3a">
+<title>Generador de Reportes · Coordinación de Seguridad</title>
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CJPF Reportes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{
+    --azul-toga:#0b1f3a;
+    --azul-medio:#16345c;
+    --azul-claro:#2d5a8c;
+    --oro:#c9a14a;
+    --oro-claro:#e2c478;
+    --papel:#f7f5f0;
+    --papel-linea:#e8e3d8;
+    --tinta:#1a1a1a;
+    --tinta-suave:#5a5a5a;
+    --verde:#2f7d4f;
+    --rojo:#a33;
+    --radio:10px;
+    --sombra:0 1px 3px rgba(11,31,58,.08),0 6px 24px rgba(11,31,58,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+    background:var(--papel);
+    color:var(--tinta);
+    line-height:1.5;
+    padding-bottom:120px;
+  }
+  /* ---- Encabezado institucional ---- */
+  header{
+    background:linear-gradient(160deg,var(--azul-toga),var(--azul-medio));
+    color:#fff;
+    padding:22px 18px 20px;
+    border-bottom:3px solid var(--oro);
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    right:-30px;top:-30px;
+    width:140px;height:140px;
+    border:1px solid rgba(201,161,74,.25);
+    border-radius:50%;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    right:6px;top:6px;
+    width:90px;height:90px;
+    border:1px solid rgba(201,161,74,.18);
+    border-radius:50%;
+  }
+  .crest{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;
+    border:1.5px solid var(--oro);
+    color:var(--oro-claro);
+    font-size:17px;margin-bottom:10px;
+  }
+  header h1{
+    font-size:1.02rem;font-weight:600;letter-spacing:.3px;
+    line-height:1.25;max-width:80%;
+  }
+  header p{
+    font-size:.74rem;color:var(--oro-claro);
+    letter-spacing:2px;text-transform:uppercase;margin-top:4px;
+  }
+  /* ---- Contenedor ---- */
+  .wrap{max-width:680px;margin:0 auto;padding:18px 14px}
+  fieldset{
+    border:none;background:#fff;border-radius:var(--radio);
+    box-shadow:var(--sombra);padding:16px 16px 18px;margin-bottom:14px;
+  }
+  legend{
+    font-size:.7rem;font-weight:700;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--azul-claro);
+    padding:0 8px;display:flex;align-items:center;gap:7px;
+  }
+  legend .n{
+    background:var(--azul-toga);color:var(--oro-claro);
+    width:20px;height:20px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:.68rem;
+  }
+  label{display:block;font-size:.78rem;font-weight:600;color:var(--tinta-suave);margin:10px 0 4px}
+  input,select,textarea{
+    width:100%;font-family:inherit;font-size:.92rem;
+    padding:10px 11px;border:1px solid var(--papel-linea);
+    border-radius:8px;background:#fdfdfb;color:var(--tinta);
+    transition:border-color .15s,box-shadow .15s;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:none;border-color:var(--azul-claro);
+    box-shadow:0 0 0 3px rgba(45,90,140,.12);
+  }
+  textarea{resize:vertical;min-height:72px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:120px}
+  .hint{font-size:.7rem;color:var(--tinta-suave);margin-top:3px;font-weight:400}
+  /* ---- Chips de resolución ---- */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{
+    font-size:.8rem;padding:8px 13px;border-radius:20px;
+    border:1.5px solid var(--papel-linea);background:#fff;
+    cursor:pointer;user-select:none;transition:all .14s;
+    color:var(--tinta-suave);font-weight:600;
+  }
+  .chip:hover{border-color:var(--azul-claro)}
+  .chip.on{
+    background:var(--azul-toga);color:#fff;border-color:var(--azul-toga);
+  }
+  .chip.on.alt{background:var(--verde);border-color:var(--verde)}
+  .chip.on.warn{background:var(--rojo);border-color:var(--rojo)}
+  .sub-block{
+    margin-top:10px;padding:12px;background:var(--papel);
+    border-radius:8px;border:1px dashed var(--papel-linea);
+    display:none;
+  }
+  .sub-block.show{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
+  .sub-block label:first-child{margin-top:0}
+  .grupo-titulo{
+    font-size:.72rem;font-weight:700;color:var(--azul-claro);
+    text-transform:uppercase;letter-spacing:1px;margin:14px 0 4px;
+  }
+  /* ---- Vista previa ---- */
+  .preview-card{
+    background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);
+    overflow:hidden;
+  }
+  .preview-head{
+    background:var(--azul-toga);color:#fff;padding:11px 16px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .preview-head span{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--oro-claro)}
+  #salida{
+    white-space:pre-wrap;word-wrap:break-word;
+    font-family:"SF Mono",Consolas,Menlo,monospace;
+    font-size:.8rem;line-height:1.55;padding:16px;color:var(--tinta);
+    background:repeating-linear-gradient(transparent,transparent 27px,#f4f1e8 27px,#f4f1e8 28px);
+  }
+  /* ---- Barra inferior fija ---- */
+  .barra{
+    position:fixed;bottom:0;left:0;right:0;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--papel-linea);
+    padding:12px 14px;display:flex;gap:10px;
+    max-width:680px;margin:0 auto;
+  }
+  .btn{
+    flex:1;font-family:inherit;font-size:.9rem;font-weight:700;
+    padding:13px;border:none;border-radius:9px;cursor:pointer;
+    transition:transform .1s,filter .15s;letter-spacing:.3px;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-copiar{background:var(--azul-toga);color:#fff}
+  .btn-copiar:hover{filter:brightness(1.15)}
+  .btn-limpiar{background:transparent;color:var(--tinta-suave);border:1.5px solid var(--papel-linea);flex:0 0 auto;padding:13px 18px}
+  .toast{
+    position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--verde);color:#fff;padding:11px 22px;border-radius:24px;
+    font-size:.85rem;font-weight:600;opacity:0;pointer-events:none;
+    transition:all .3s;box-shadow:0 6px 20px rgba(47,125,79,.4);z-index:99;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="crest">⚖</div>
+  <h1>Poder Judicial de la Federación<br>Coordinación de Seguridad</h1>
+  <p>Generador de reportes · CJPF Culiacán</p>
+</header>
+
+<div class="wrap">
+
+  <!-- 1. Datos generales -->
+  <fieldset>
+    <legend><span class="n">1</span> Datos de la audiencia</legend>
+    <div class="row">
+      <div>
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+      <div>
+        <label for="sala">Sala</label>
+        <select id="sala">
+          <option value="1">Sala #1</option>
+          <option value="2">Sala #2</option>
+          <option value="3">Sala #3</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="causa">Causa Penal</label>
+    <input type="text" id="causa" placeholder="Ej. 236/2026" inputmode="numeric">
+
+    <label for="tipoAud">Tipo de audiencia (paréntesis)</label>
+    <input type="text" id="tipoAud" list="tiposAud" placeholder="Ej. Inicial con detenido">
+    <datalist id="tiposAud">
+      <option value="Inicial con detenido">
+      <option value="Inicial con detenidos">
+      <option value="Continuación de inicial">
+      <option value="Inicial">
+      <option value="Intermedia">
+      <option value="Cierre de investigación">
+      <option value="Cierre de investigación complementaria">
+      <option value="Medida cautelar">
+      <option value="Modificación de medida cautelar">
+      <option value="Reapertura de la investigación">
+      <option value="Prórroga de plazo de investigación">
+      <option value="Juicio Oral">
+      <option value="Beneficio de Libertad">
+    </datalist>
+  </fieldset>
+
+  <!-- 2. Juez e imputados -->
+  <fieldset>
+    <legend><span class="n">2</span> Juez e imputados</legend>
+    <label for="juez">Juez que resuelve</label>
+    <select id="juez">
+      <option value="">— Selecciona —</option>
+      <option value="F">La Jueza · Erika Carolina Ramírez López (ECRL)</option>
+      <option value="F">La Jueza · Ana Karina Aragón Cutiño (AKAC)</option>
+      <option value="F">La Jueza · María Inés Camacho Martínez (MICM)</option>
+      <option value="M">El Juez · Alejandro Bermúdez Sánchez (ABS)</option>
+    </select>
+    <div class="hint">Define automáticamente "La Jueza" / "El Juez" en la resolución.</div>
+
+    <label for="imputados">Imputados (uno por línea)</label>
+    <textarea id="imputados" placeholder="Rosario Alejandro Salazar Núñez
+Gustavo Reyes de Jesús"></textarea>
+    <div class="hint">Escribe cada nombre en una línea. Se listan con guion automáticamente.</div>
+  </fieldset>
+
+  <!-- 3. Delito y horarios -->
+  <fieldset>
+    <legend><span class="n">3</span> Delito y horarios</legend>
+    <label for="delito">Delito</label>
+    <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego...">
+    <datalist id="delitos">
+      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente.">
+      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente y Contra la Salud.">
+      <option value="Contra la Salud.">
+      <option value="En materia de Hidrocarburos.">
+      <option value="Previsto en el CPF.">
+      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente, cartuchos y cargadores.">
+    </datalist>
+    <div class="row">
+      <div>
+        <label for="inicio">Inició</label>
+        <input type="time" id="inicio">
+      </div>
+      <div>
+        <label for="fin">Finalizó</label>
+        <input type="time" id="fin">
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- 4. Resolución -->
+  <fieldset>
+    <legend><span class="n">4</span> Resolución</legend>
+    <div class="hint" style="margin-bottom:6px">Selecciona los componentes en el orden en que ocurrieron. Se arman en un solo párrafo.</div>
+
+    <div class="grupo-titulo">Detención / Vinculación</div>
+    <div class="chips" id="grupoVinc">
+      <div class="chip" data-k="legal">Calificó legal la detención</div>
+      <div class="chip" data-k="vinculo">Vinculó a proceso</div>
+      <div class="chip warn" data-k="novinculo">No vinculó · libertad</div>
+    </div>
+
+    <div class="grupo-titulo">Duplicidad de plazo</div>
+    <div class="chips" id="grupoDup">
+      <div class="chip" data-k="dup72">Duplicidad 72 hrs</div>
+      <div class="chip" data-k="dup144">Duplicidad 144 hrs</div>
+    </div>
+    <div class="sub-block" id="subDup">
+      <label>Continuación señalada para:</label>
+      <div class="row">
+        <div><input type="time" id="dupHora"></div>
+        <div><input type="text" id="dupFecha" placeholder="Ej. 27 de Mayo"></div>
+      </div>
+    </div>
+
+    <div class="grupo-titulo">Medida cautelar</div>
+    <div class="chips" id="grupoMc">
+      <div class="chip" data-k="pp">Prisión preventiva</div>
+      <div class="chip" data-k="ppo">Prisión preventiva oficiosa</div>
+      <div class="chip alt" data-k="umeca">Presentación a UMECA</div>
+      <div class="chip warn" data-k="negomc">Negó solicitud de defensa</div>
+    </div>
+
+    <div class="grupo-titulo">Cierre de investigación</div>
+    <div class="chips" id="grupoCierre">
+      <div class="chip" data-k="meses">Autorizó N meses cierre</div>
+      <div class="chip" data-k="prorroga">Prórroga de N meses</div>
+      <div class="chip" data-k="decreto">Decretó cierre</div>
+    </div>
+    <div class="sub-block" id="subMeses">
+      <label>Meses autorizados para el cierre:</label>
+      <select id="mesesNum">
+        <option value="1">1 mes</option>
+        <option value="2" selected>2 meses</option>
+        <option value="3">3 meses</option>
+        <option value="4">4 meses</option>
+        <option value="6">6 meses</option>
+      </select>
+    </div>
+    <div class="sub-block" id="subProrroga">
+      <label>Meses de prórroga:</label>
+      <select id="prorrogaNum">
+        <option value="1">1 mes</option>
+        <option value="2" selected>2 meses</option>
+        <option value="3">3 meses</option>
+      </select>
+    </div>
+
+    <div class="grupo-titulo">Intermedia / Otras</div>
+    <div class="chips" id="grupoOtras">
+      <div class="chip" data-k="abreviado">Procedimiento abreviado + pena</div>
+      <div class="chip" data-k="difirio">Difirió la audiencia</div>
+      <div class="chip" data-k="reprogramo">Reprogramó audiencia</div>
+    </div>
+    <div class="sub-block" id="subAbreviado">
+      <label>Pena impuesta (texto):</label>
+      <input type="text" id="penaTxt" placeholder="Ej. 9 años, 5 meses, 24 días y 78 UMA">
+    </div>
+    <div class="sub-block" id="subRepro">
+      <label>Nueva fecha y hora (opcional):</label>
+      <input type="text" id="reproTxt" placeholder="Ej. 22 de Junio de 2026 a las 12:00 horas">
+    </div>
+
+    <label for="resManual" style="margin-top:16px">Resolución (editable)</label>
+    <textarea id="resManual" placeholder="Se arma sola al seleccionar arriba. También puedes escribirla a mano."></textarea>
+  </fieldset>
+
+  <!-- 5. Quien reporta -->
+  <fieldset>
+    <legend><span class="n">5</span> Reporta</legend>
+    <label for="oficial">Oficial que reporta</label>
+    <select id="oficial">
+      <option value="OS. Arturo Uriarte Soto">OS · Arturo Uriarte Soto</option>
+      <option value="JGS. Hugo Enrique Guzmán Zepeda">JGS · Hugo Enrique Guzmán Zepeda</option>
+      <option value="OC Mtro. Alexis Omar García Paz">OC · Alexis Omar García Paz</option>
+      <option value="SC. Enrique López Landeros">SC · Enrique López Landeros</option>
+      <option value="__custom">Otro (escribir)…</option>
+    </select>
+    <input type="text" id="oficialCustom" placeholder="Ej. OC. Nombre completo" style="display:none;margin-top:8px">
+  </fieldset>
+
+  <!-- Vista previa -->
+  <div class="preview-card">
+    <div class="preview-head">
+      <span>Vista previa</span>
+      <span id="contadorImp"></span>
+    </div>
+    <div id="salida"></div>
+  </div>
+</div>
+
+<div class="barra">
+  <button class="btn btn-copiar" id="btnCopiar">Copiar reporte</button>
+  <button class="btn btn-limpiar" id="btnLimpiar">Limpiar</button>
+</div>
+
+<div class="toast" id="toast">Reporte copiado ✓</div>
+
+<script>
+const MESES_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+// ---- Estado de chips ----
+const sel = new Set();
+
+function toggleChip(chip){
+  const k = chip.dataset.k;
+  // Exclusividad dentro de grupos lógicos
+  const exclusivos = {
+    pp:['ppo'], ppo:['pp'],
+    vinculo:['novinculo'], novinculo:['vinculo','meses','pp','ppo'],
+    dup72:['dup144'], dup144:['dup72'],
+    meses:['prorroga','decreto','novinculo'], prorroga:['meses','decreto'], decreto:['meses','prorroga'],
+    difirio:['reprogramo'], reprogramo:['difirio']
+  };
+  if(sel.has(k)){
+    sel.delete(k); chip.classList.remove('on');
+  } else {
+    sel.add(k); chip.classList.add('on');
+    (exclusivos[k]||[]).forEach(ex=>{
+      sel.delete(ex);
+      document.querySelector(`.chip[data-k="${ex}"]`)?.classList.remove('on');
+    });
+  }
+  actualizarSubBloques();
+  construirResolucion();
+}
+
+function actualizarSubBloques(){
+  document.getElementById('subDup').classList.toggle('show', sel.has('dup72')||sel.has('dup144'));
+  document.getElementById('subMeses').classList.toggle('show', sel.has('meses'));
+  document.getElementById('subProrroga').classList.toggle('show', sel.has('prorroga'));
+  document.getElementById('subAbreviado').classList.toggle('show', sel.has('abreviado'));
+  document.getElementById('subRepro').classList.toggle('show', sel.has('reprogramo'));
+}
+
+// ---- Construcción de la resolución en lenguaje natural ----
+function construirResolucion(){
+  const gen = document.getElementById('juez').value; // 'F' | 'M' | ''
+  const sujeto = gen==='M' ? 'El Juez' : 'La Jueza';
+  const partes = [];
+
+  if(sel.has('legal')) partes.push('calificó de legal la detención');
+
+  if(sel.has('dup72')||sel.has('dup144')){
+    const h = document.getElementById('dupHora').value;
+    const f = document.getElementById('dupFecha').value.trim();
+    const plazo = sel.has('dup144') ? '144 hrs' : '72 hrs';
+    let txt = `la defensa solicitó la duplicidad del plazo de ${plazo}`;
+    if(h||f){
+      const hora = h ? formatoHora(h) : '00:00';
+      txt += `, se señalaron las ${hora} horas del ${f||'___'} del año en curso para la continuación de la misma`;
+    }
+    partes.push(txt);
+  }
+
+  if(sel.has('vinculo')) partes.push('dictó auto de vinculación a proceso');
+  if(sel.has('novinculo')) partes.push('dictó auto de no vinculación a proceso y ordenó la inmediata libertad del imputado');
+
+  if(sel.has('pp')) partes.push('impuso prisión preventiva como medida cautelar');
+  if(sel.has('ppo')) partes.push('impuso prisión preventiva oficiosa como medida cautelar');
+  if(sel.has('umeca')) partes.push('impuso como medida cautelar presentación periódica a UMECA');
+  if(sel.has('negomc')) partes.push('negó la solicitud de la defensa');
+
+  if(sel.has('meses')){
+    const m = document.getElementById('mesesNum').value;
+    partes.push(`autorizó ${m} ${m==='1'?'mes':'meses'} para el cierre de investigación`);
+  }
+  if(sel.has('prorroga')){
+    const m = document.getElementById('prorrogaNum').value;
+    partes.push(`autorizó prórroga de ${m} ${m==='1'?'mes':'meses'} para el cierre de investigación`);
+  }
+  if(sel.has('decreto')) partes.push('decretó el cierre de la investigación complementaria');
+
+  if(sel.has('abreviado')){
+    const pena = document.getElementById('penaTxt').value.trim();
+    partes.push(pena
+      ? `autorizó el procedimiento abreviado imponiendo una pena de ${pena} al hoy sentenciado`
+      : 'autorizó el procedimiento abreviado');
+  }
+  if(sel.has('difirio')) partes.push('difirió la presente audiencia');
+  if(sel.has('reprogramo')){
+    const r = document.getElementById('reproTxt').value.trim();
+    partes.push(r
+      ? `reprogramó la presente audiencia para el ${r}`
+      : 'reprogramó la audiencia');
+  }
+
+  if(partes.length===0){ document.getElementById('resManual').value=''; armarSalida(); return; }
+
+  // Conector final: "finalmente" antes del último si hay 3+
+  let frase;
+  if(partes.length===1){
+    frase = `${sujeto} ${partes[0]}.`;
+  } else {
+    const ult = partes[partes.length-1];
+    const previas = partes.slice(0,-1);
+    frase = `${sujeto} ${previas.join(', ')}, finalmente ${ult}.`;
+  }
+  // Capitaliza primera letra del primer verbo
+  document.getElementById('resManual').value = frase;
+  armarSalida();
+}
+
+function formatoHora(t){ return t ? t.slice(0,5) : ''; }
+
+function fechaLarga(iso){
+  if(!iso) return '__/_____/____';
+  const [a,m,d] = iso.split('-');
+  return `${parseInt(d)}/${MESES_ES[parseInt(m)-1]}/${a}`;
+}
+
+// ---- Armar el reporte completo ----
+function armarSalida(){
+  const fecha   = fechaLarga(document.getElementById('fecha').value);
+  const sala    = document.getElementById('sala').value;
+  const causa   = document.getElementById('causa').value.trim() || '___/____';
+  const tipoAud = document.getElementById('tipoAud').value.trim();
+  const delito  = document.getElementById('delito').value.trim() || '___';
+  const inicio  = formatoHora(document.getElementById('inicio').value) || '__:__';
+  const fin     = formatoHora(document.getElementById('fin').value) || '__:__';
+  const res     = document.getElementById('resManual').value.trim() || '___';
+
+  // Imputados
+  const lineas = document.getElementById('imputados').value
+    .split('\n').map(s=>s.trim()).filter(Boolean);
+  const etiqueta = lineas.length===1 ? 'Imputado' : 'Imputados';
+  const listaImp = lineas.length
+    ? lineas.map(n=>`- ${n}`).join('\n')
+    : '- ___';
+  document.getElementById('contadorImp').textContent =
+    lineas.length ? `${lineas.length} imputado${lineas.length>1?'s':''}` : '';
+
+  // Oficial
+  let oficial = document.getElementById('oficial').value;
+  if(oficial==='__custom') oficial = document.getElementById('oficialCustom').value.trim() || '___';
+
+  const txt =
+`*Poder Judicial de la Federación*
+*Órgano de Administración Judicial*
+*Coordinación de Seguridad*
+
+*Fecha*: ${fecha}
+
+*EVENTO*: Audiencia sala #${sala}
+
+*Inmueble*: CJPF, Culiacán, Sinaloa.
+
+> Causa Penal: ${causa}${tipoAud ? `\n(${tipoAud})` : ''}
+
+> ${etiqueta}:
+${listaImp}
+
+> Delito: ${delito}
+
+> Inició: ${inicio} hrs.
+> Finalizó: ${fin} hrs.
+
+> Resolución: ${res}
+
+Reporta:
+${oficial}`;
+
+  document.getElementById('salida').textContent = txt;
+}
+
+// ---- Listeners ----
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>toggleChip(c));
+});
+['fecha','sala','causa','tipoAud','delito','inicio','fin','imputados','resManual','oficialCustom']
+  .forEach(id=>document.getElementById(id).addEventListener('input',armarSalida));
+
+document.getElementById('juez').addEventListener('change',construirResolucion);
+['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt']
+  .forEach(id=>document.getElementById(id).addEventListener('input',construirResolucion));
+
+document.getElementById('oficial').addEventListener('change',e=>{
+  document.getElementById('oficialCustom').style.display =
+    e.target.value==='__custom' ? 'block' : 'none';
+  armarSalida();
+});
+
+// Copiar
+document.getElementById('btnCopiar').addEventListener('click',async()=>{
+  const txt = document.getElementById('salida').textContent;
+  try{
+    await navigator.clipboard.writeText(txt);
+  }catch(e){
+    const ta=document.createElement('textarea');
+    ta.value=txt;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');ta.remove();
+  }
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+});
+
+// Limpiar
+document.getElementById('btnLimpiar').addEventListener('click',()=>{
+  if(!confirm('¿Limpiar todos los campos?')) return;
+  document.querySelectorAll('input,textarea').forEach(el=>{
+    if(el.type!=='date'&&el.type!=='time') el.value='';
+  });
+  document.getElementById('juez').selectedIndex=0;
+  document.getElementById('oficial').selectedIndex=0;
+  document.getElementById('oficialCustom').style.display='none';
+  sel.clear();
+  document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  actualizarSubBloques();
+  ponerFechaHoy();
+  armarSalida();
+});
+
+// Fecha de hoy por defecto
+function ponerFechaHoy(){
+  const hoy=new Date();
+  const iso=hoy.getFullYear()+'-'+String(hoy.getMonth()+1).padStart(2,'0')+'-'+String(hoy.getDate()).padStart(2,'0');
+  document.getElementById('fecha').value=iso;
+}
+ponerFechaHoy();
+armarSalida();
+
+// Registrar service worker para PWA
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
