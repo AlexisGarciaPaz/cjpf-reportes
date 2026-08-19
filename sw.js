@@ -1,4 +1,4 @@
-const CACHE = 'cjpf-v2';
+const CACHE = 'cjpf-v4';
 const ARCHIVOS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
