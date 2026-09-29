@@ -1,5 +1,5 @@
-const CACHE = 'cjpf-v4';
-const ARCHIVOS = ['./', './index.html', './manifest.json'];
+const CACHE = 'cjpf-v7';
+const ARCHIVOS = ['./', './index.html', './data.js', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(

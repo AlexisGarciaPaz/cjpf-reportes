@@ -1,7 +1,7 @@
 {
   "name": "CJPF Generador de Reportes",
   "short_name": "CJPF Reportes",
-  "description": "Generador de reportes de audiencias · Coordinación de Seguridad CJPF Culiacán",
+  "description": "Generador de reportes de audiencias · Coordinación de Seguridad CJPF",
   "start_url": "/cjpf-reportes/",
   "display": "standalone",
   "background_color": "#0b1f3a",

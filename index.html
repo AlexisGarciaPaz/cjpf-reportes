@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b1f3a">
-<title>Generador de Reportes · Coordinación de Seguridad</title>
+<title>Generador de Reportes · CJPF</title>
 <link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CJPF Reportes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   :root{
     --azul-toga:#0b1f3a;
@@ -27,10 +27,11 @@
     --sombra:0 1px 3px rgba(11,31,58,.08),0 6px 24px rgba(11,31,58,.06);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%;background:#f7f5f0;-webkit-overflow-scrolling:touch}
   body{
-    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
-    background:var(--papel);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+    background:#f7f5f0;
+    -webkit-overflow-scrolling:touch;
     color:var(--tinta);
     line-height:1.5;
     padding-bottom:120px;
@@ -180,14 +181,30 @@
 <header>
   <div class="crest">⚖</div>
   <h1>Poder Judicial de la Federación<br>Coordinación de Seguridad</h1>
-  <p>Generador de reportes · CJPF Culiacán</p>
+  <p id="subtitulo">Generador de reportes</p>
 </header>
 
 <div class="wrap">
 
-  <!-- 1. Datos generales -->
+  <!-- 1. Centro -->
   <fieldset>
-    <legend><span class="n">1</span> Datos de la audiencia</legend>
+    <legend><span class="n">1</span> Centro</legend>
+    <div class="row">
+      <div>
+        <label for="region">Región</label>
+        <select id="region"></select>
+      </div>
+      <div>
+        <label for="centro">CJPF</label>
+        <select id="centro"></select>
+      </div>
+    </div>
+    <div class="hint">Define el encabezado, los jueces, el personal de seguridad y el inmueble del reporte. Se recuerda en este dispositivo.</div>
+  </fieldset>
+
+  <!-- 2. Datos generales -->
+  <fieldset>
+    <legend><span class="n">2</span> Datos de la audiencia</legend>
     <div class="row">
       <div>
         <label for="fecha">Fecha</label>
@@ -195,11 +212,7 @@
       </div>
       <div>
         <label for="sala">Sala</label>
-        <select id="sala">
-          <option value="1">Sala #1</option>
-          <option value="2">Sala #2</option>
-          <option value="3">Sala #3</option>
-        </select>
+        <select id="sala"></select>
       </div>
     </div>
 
@@ -208,35 +221,15 @@
 
     <label for="tipoAud">Tipo de audiencia (paréntesis)</label>
     <input type="text" id="tipoAud" list="tiposAud" placeholder="Ej. Inicial con detenido">
-    <datalist id="tiposAud">
-      <option value="Inicial con detenido">
-      <option value="Inicial con detenidos">
-      <option value="Continuación de inicial">
-      <option value="Inicial">
-      <option value="Intermedia">
-      <option value="Cierre de investigación">
-      <option value="Cierre de investigación complementaria">
-      <option value="Medida cautelar">
-      <option value="Modificación de medida cautelar">
-      <option value="Reapertura de la investigación">
-      <option value="Prórroga de plazo de investigación">
-      <option value="Juicio Oral">
-      <option value="Beneficio de Libertad">
-    </datalist>
+    <datalist id="tiposAud"></datalist>
   </fieldset>
 
-  <!-- 2. Juez e imputados -->
+  <!-- 3. Juez e imputados -->
   <fieldset>
-    <legend><span class="n">2</span> Juez e imputados</legend>
-    <label for="juez">Juez que resuelve</label>
-    <select id="juez">
-      <option value="">— Selecciona —</option>
-      <option value="F">La Jueza · Erika Carolina Ramírez López (ECRL)</option>
-      <option value="F">La Jueza · Ana Karina Aragón Cutiño (AKAC)</option>
-      <option value="F">La Jueza · María Inés Camacho Martínez (MICM)</option>
-      <option value="M">El Juez · Alejandro Bermúdez Sánchez (ABS)</option>
-    </select>
-    <div class="hint">Define automáticamente "La Jueza" / "El Juez" en la resolución.</div>
+    <legend><span class="n">3</span> Juez e imputados</legend>
+    <label for="juez" id="lblJuez">Juez que resuelve</label>
+    <select id="juez"></select>
+    <div class="hint" id="hintJuez">Define automáticamente "La Jueza" / "El Juez" en la resolución.</div>
 
     <label for="imputados">Imputados (uno por línea)</label>
     <textarea id="imputados" placeholder="Rosario Alejandro Salazar Núñez
@@ -244,19 +237,12 @@ Gustavo Reyes de Jesús"></textarea>
     <div class="hint">Escribe cada nombre en una línea. Se listan con guion automáticamente.</div>
   </fieldset>
 
-  <!-- 3. Delito y horarios -->
+  <!-- 4. Delito y horarios -->
   <fieldset>
-    <legend><span class="n">3</span> Delito y horarios</legend>
+    <legend><span class="n">4</span> Delito y horarios</legend>
     <label for="delito">Delito</label>
     <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego...">
-    <datalist id="delitos">
-      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente.">
-      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente y Contra la Salud.">
-      <option value="Contra la Salud.">
-      <option value="En materia de Hidrocarburos.">
-      <option value="Previsto en el CPF.">
-      <option value="Portación de arma de fuego de uso exclusivo de la Fuerza Armada Permanente, cartuchos y cargadores.">
-    </datalist>
+    <datalist id="delitos"></datalist>
     <div class="row">
       <div>
         <label for="inicio">Inició</label>
@@ -269,9 +255,9 @@ Gustavo Reyes de Jesús"></textarea>
     </div>
   </fieldset>
 
-  <!-- 4. Resolución -->
+  <!-- 5. Resolución -->
   <fieldset>
-    <legend><span class="n">4</span> Resolución</legend>
+    <legend><span class="n">5</span> Resolución</legend>
     <div class="hint" style="margin-bottom:6px">Selecciona los componentes en el orden en que ocurrieron. Se arman en un solo párrafo.</div>
 
     <div class="grupo-titulo">Detención / Vinculación</div>
@@ -346,17 +332,11 @@ Gustavo Reyes de Jesús"></textarea>
     <textarea id="resManual" placeholder="Se arma sola al seleccionar arriba. También puedes escribirla a mano."></textarea>
   </fieldset>
 
-  <!-- 5. Quien reporta -->
+  <!-- 6. Quien reporta -->
   <fieldset>
-    <legend><span class="n">5</span> Reporta</legend>
+    <legend><span class="n">6</span> Reporta</legend>
     <label for="oficial">Oficial que reporta</label>
-    <select id="oficial">
-      <option value="OC Mtro. Alexis Omar García Paz">OC · Alexis Omar García Paz</option>
-      <option value="OS. Cesár Reyniel Castro Montoya">OS. Cesár Reyniel Castro Montoya</option>
-      <option value="JGS. Arturo Granados Sánchez">JGS. Arturo Granados Sánchez</option>
-      <option value="SC. Enrique López Landeros">SC · Enrique López Landeros</option>
-      <option value="__custom">Otro (escribir)…</option>
-    </select>
+    <select id="oficial"></select>
     <input type="text" id="oficialCustom" placeholder="Ej. OC. Nombre completo" style="display:none;margin-top:8px">
   </fieldset>
 
@@ -377,7 +357,13 @@ Gustavo Reyes de Jesús"></textarea>
 
 <div class="toast" id="toast">Reporte copiado ✓</div>
 
+<script src="data.js"></script>
 <script>
+if(typeof CJPF_DATA === 'undefined'){
+  document.getElementById('salida').textContent = 'Error: no se pudo cargar data.js';
+  throw new Error('data.js no cargado');
+}
+
 const MESES_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 // ---- Estado de chips ----
@@ -416,8 +402,9 @@ function actualizarSubBloques(){
 
 // ---- Construcción de la resolución en lenguaje natural ----
 function construirResolucion(){
-  const gen = document.getElementById('juez').value; // 'F' | 'M' | ''
-  const sujeto = gen==='M' ? 'El Juez' : 'La Jueza';
+  // El valor del select es "tipo:genero" (ej. "J:F" = Jueza, "M:M" = Magistrado). Vacío = "La Jueza".
+  const [tipoJ, genJ] = document.getElementById('juez').value.split(':');
+  const sujeto = tratamiento(tipoJ || 'J', genJ || 'F');
   const partes = [];
 
   if(sel.has('legal')) partes.push('calificó de legal la detención');
@@ -496,7 +483,8 @@ function armarSalida(){
   const sala    = document.getElementById('sala').value;
   const causa   = document.getElementById('causa').value.trim() || '___/____';
   const tipoAud = document.getElementById('tipoAud').value.trim();
-  const delito  = document.getElementById('delito').value.trim() || '___';
+  let delito    = document.getElementById('delito').value.trim();
+  delito = delito ? (delito.endsWith('.') ? delito : delito + '.') : '___';
   const inicio  = formatoHora(document.getElementById('inicio').value) || '__:__';
   const fin     = formatoHora(document.getElementById('fin').value) || '__:__';
   const res     = document.getElementById('resManual').value.trim() || '___';
@@ -514,6 +502,11 @@ function armarSalida(){
   // Oficial
   let oficial = document.getElementById('oficial').value;
   if(oficial==='__custom') oficial = document.getElementById('oficialCustom').value.trim() || '___';
+  if(!oficial) oficial = '___';
+
+  // Inmueble según el centro elegido
+  const c = centroActual();
+  const inmueble = c ? `CJPF, ${c.nombre}, ${c.abrev}.` : 'CJPF, ___';
 
   const txt =
 `*Poder Judicial de la Federación*
@@ -524,7 +517,7 @@ function armarSalida(){
 
 *EVENTO*: Audiencia sala #${sala}
 
-*Inmueble*: CJPF, Culiacán, Sinaloa.
+*Inmueble*: ${inmueble}
 
 > Causa Penal: ${causa}${tipoAud ? `\n(${tipoAud})` : ''}
 
@@ -558,8 +551,17 @@ document.getElementById('juez').addEventListener('change',construirResolucion);
 document.getElementById('oficial').addEventListener('change',e=>{
   document.getElementById('oficialCustom').style.display =
     e.target.value==='__custom' ? 'block' : 'none';
+  const c = centroActual();
+  if(c) guardar(CLAVE_OFICIAL + c.id, e.target.value);
   armarSalida();
 });
+
+// Región y centro
+document.getElementById('region').addEventListener('change',()=>{
+  poblarCentros();
+  aplicarCentro();
+});
+document.getElementById('centro').addEventListener('change',aplicarCentro);
 
 // Copiar
 document.getElementById('btnCopiar').addEventListener('click',async()=>{
@@ -580,11 +582,9 @@ document.getElementById('btnCopiar').addEventListener('click',async()=>{
 document.getElementById('btnLimpiar').addEventListener('click',()=>{
   if(!confirm('¿Limpiar todos los campos?')) return;
   document.querySelectorAll('input,textarea').forEach(el=>{
-    if(el.type!=='date'&&el.type!=='time') el.value='';
+    if(el.type!=='date'&&el.type!=='time'&&el.id!=='oficialCustom') el.value='';
   });
   document.getElementById('juez').selectedIndex=0;
-  document.getElementById('oficial').selectedIndex=0;
-  document.getElementById('oficialCustom').style.display='none';
   sel.clear();
   document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
   actualizarSubBloques();
@@ -598,8 +598,158 @@ function ponerFechaHoy(){
   const iso=hoy.getFullYear()+'-'+String(hoy.getMonth()+1).padStart(2,'0')+'-'+String(hoy.getDate()).padStart(2,'0');
   document.getElementById('fecha').value=iso;
 }
+
+// =====================================================================
+//  Centro / región: todo lo que depende del CJPF elegido
+// =====================================================================
+const REGIONES = CJPF_DATA.regiones;
+const CLAVE_CENTRO  = 'cjpf.centro';
+const CLAVE_OFICIAL = 'cjpf.oficial.';       // se le agrega el id del centro
+const SALAS_POR_DEFECTO = 10;                // se usa si el centro no define "salas" en data.js
+
+// localStorage puede fallar (ej. Safari en modo privado): se protege con try/catch
+function guardar(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function leer(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+function regionActual(){
+  return REGIONES.find(r=>r.id===document.getElementById('region').value) || null;
+}
+function centroActual(){
+  const r = regionActual();
+  return r ? (r.centros.find(c=>c.id===document.getElementById('centro').value) || null) : null;
+}
+
+// "J"/"M" (juez/magistrado) + "F"/"M" (género) -> "La Jueza", "El Magistrado", etc.
+function tratamiento(tipo, genero){
+  if(tipo==='M') return genero==='M' ? 'El Magistrado' : 'La Magistrada';
+  return genero==='M' ? 'El Juez' : 'La Jueza';
+}
+
+// "Erika Carolina Ramírez López" -> "ECRL" (ignora partículas en minúscula como "de")
+function iniciales(nombre){
+  return nombre.split(/\s+/).filter(p=>/^[A-ZÁÉÍÓÚÑ]/.test(p)).map(p=>p[0]).join('');
+}
+
+function nuevaOpcion(valor, texto){
+  const o = document.createElement('option');
+  o.value = valor;
+  o.textContent = texto;
+  return o;
+}
+
+function poblarDatalist(id, valores){
+  const dl = document.getElementById(id);
+  dl.innerHTML = '';
+  valores.forEach(v=>dl.appendChild(nuevaOpcion(v, '')));
+}
+
+function poblarRegiones(){
+  const sel = document.getElementById('region');
+  sel.innerHTML = '';
+  REGIONES.forEach(r=>sel.appendChild(nuevaOpcion(r.id, r.nombre)));
+}
+
+function poblarCentros(){
+  const r = regionActual();
+  const sel = document.getElementById('centro');
+  sel.innerHTML = '';
+  sel.appendChild(nuevaOpcion('', '— Selecciona —'));
+  if(r) r.centros.forEach(c=>sel.appendChild(nuevaOpcion(c.id, `${c.nombre}, ${c.abrev}`)));
+}
+
+function poblarSalas(c){
+  const sel = document.getElementById('sala');
+  const previa = sel.value;
+  const total = (c && c.salas) || SALAS_POR_DEFECTO;
+  sel.innerHTML = '';
+  for(let i=1;i<=total;i++) sel.appendChild(nuevaOpcion(String(i), `Sala #${i}`));
+  if(previa && Number(previa)<=total) sel.value = previa;
+}
+
+function poblarJueces(c){
+  const sel = document.getElementById('juez');
+  sel.innerHTML = '';
+  sel.appendChild(nuevaOpcion('', '— Selecciona —'));
+  const hayMag = !!(c && c.magistrados.length);
+  document.getElementById('lblJuez').textContent = hayMag ? 'Juez o magistrado que resuelve' : 'Juez que resuelve';
+  document.getElementById('hintJuez').textContent = hayMag
+    ? 'Define automáticamente "La Jueza" / "El Juez" o "La Magistrada" / "El Magistrado" en la resolución.'
+    : 'Define automáticamente "La Jueza" / "El Juez" en la resolución.';
+  if(!c) return;
+
+  const agregar = (contenedor, lista, tipo)=>{
+    lista.forEach(p=>{
+      contenedor.appendChild(nuevaOpcion(`${tipo}:${p.genero}`,
+        `${tratamiento(tipo,p.genero)} · ${p.nombre} (${iniciales(p.nombre)})`));
+    });
+  };
+  if(hayMag){
+    const gJ = document.createElement('optgroup'); gJ.label = 'Jueces';
+    const gM = document.createElement('optgroup'); gM.label = 'Magistrados';
+    agregar(gJ, c.jueces, 'J');
+    agregar(gM, c.magistrados, 'M');
+    sel.appendChild(gJ); sel.appendChild(gM);
+  } else {
+    agregar(sel, c.jueces, 'J');
+  }
+}
+
+function poblarOficiales(c){
+  const sel = document.getElementById('oficial');
+  sel.innerHTML = '';
+  sel.appendChild(nuevaOpcion('', '— Selecciona —'));
+  if(c) c.seguridad.forEach(p=>sel.appendChild(nuevaOpcion(`${p.cargo}. ${p.nombre}`, `${p.cargo} · ${p.nombre}`)));
+  sel.appendChild(nuevaOpcion('__custom', 'Otro (escribir)…'));
+
+  // Recupera el último oficial usado en este centro (si sigue en la lista)
+  const guardado = c ? leer(CLAVE_OFICIAL + c.id) : null;
+  if(guardado && Array.from(sel.options).some(o=>o.value===guardado)) sel.value = guardado;
+  document.getElementById('oficialCustom').style.display = sel.value==='__custom' ? 'block' : 'none';
+}
+
+function actualizarTitulo(){
+  const r = regionActual(), c = centroActual();
+  const p = document.getElementById('subtitulo');
+  if(r && c){
+    const txt = `Región ${r.numeral} CJPF ${c.nombre}, ${c.abrev}`;
+    p.textContent = txt;
+    document.title = `Generador de Reportes · ${txt}`;
+  } else {
+    p.textContent = 'Generador de reportes';
+    document.title = 'Generador de Reportes · CJPF';
+  }
+}
+
+// Se ejecuta cada vez que cambia el centro
+function aplicarCentro(){
+  const c = centroActual();
+  if(c) guardar(CLAVE_CENTRO, c.id);
+  poblarSalas(c);
+  poblarJueces(c);
+  poblarOficiales(c);
+  actualizarTitulo();
+  construirResolucion();   // esta función llama a armarSalida()
+}
+
+// Al abrir la app: vuelve a poner el último centro usado
+function restaurarCentro(){
+  const id = leer(CLAVE_CENTRO);
+  if(!id) return;
+  const r = REGIONES.find(reg=>reg.centros.some(c=>c.id===id));
+  if(!r) return;
+  document.getElementById('region').value = r.id;
+  poblarCentros();
+  document.getElementById('centro').value = id;
+}
+
+// ---- Arranque ----
+poblarDatalist('tiposAud', CJPF_DATA.tiposAudiencia);
+poblarDatalist('delitos', CJPF_DATA.delitos);
+poblarRegiones();
+poblarCentros();
+restaurarCentro();
 ponerFechaHoy();
-armarSalida();
+aplicarCentro();
 
 // Registrar service worker para PWA
 if('serviceWorker' in navigator){
