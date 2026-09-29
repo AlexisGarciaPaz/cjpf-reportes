@@ -3,6 +3,8 @@
    Fuente: CJPF_REGION_1.docx (vigente)
 
    Convenciones:
+   - jueces y magistrados: solo se guardan SIGLAS (no nombres) y el género. Los nombres
+     completos no deben escribirse aquí porque este archivo es público en GitHub Pages.
    - genero: 'F' | 'M'  (define Jueza/Juez y Magistrada/Magistrado en el reporte)
    - cargo (seguridad): 'JGS' | 'OS' | 'SC' | 'OC'
    - inmueble: nombre del edificio que aparece en el reporte
@@ -27,14 +29,14 @@ const CJPF_DATA = {
           salas: 2,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Carlos Alberto Pantoja Arreola', genero: 'M' },
-            { nombre: 'Alfonso Olachea Aragón', genero: 'M' },
-            { nombre: 'Eduardo Antonio Velazco Treviño', genero: 'M' }
+            { siglas: 'CAPA', genero: 'M' },
+            { siglas: 'AOA', genero: 'M' },
+            { siglas: 'EAVT', genero: 'M' }
           ],
           magistrados: [
-            { nombre: 'Judith Viviana Juárez Vázquez', genero: 'F' },
-            { nombre: 'Raúl Arturo Jiménez García', genero: 'M' },
-            { nombre: 'Eduardo Farías Gasca', genero: 'M' }
+            { siglas: 'JVJV', genero: 'F' },
+            { siglas: 'RAJG', genero: 'M' },
+            { siglas: 'EFG', genero: 'M' }
           ],
           seguridad: [
             { cargo: 'JGS', nombre: 'Manuel Robles García' },
@@ -53,10 +55,10 @@ const CJPF_DATA = {
           salas: 3,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Erika Carolina Ramírez López', genero: 'F' },
-            { nombre: 'Ana Karina Aragón Cutiño', genero: 'F' },
-            { nombre: 'María Inés Camacho Martínez', genero: 'F' },
-            { nombre: 'Alejandro Bermúdez Sánchez', genero: 'M' }
+            { siglas: 'ECRL', genero: 'F' },
+            { siglas: 'AKAC', genero: 'F' },
+            { siglas: 'MICM', genero: 'F' },
+            { siglas: 'ABS', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [
@@ -78,10 +80,10 @@ const CJPF_DATA = {
           salas: 3,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Norma Alicia Sandoval Torres', genero: 'F' },
-            { nombre: 'José Luis Horta Herrera', genero: 'M' },
-            { nombre: 'Sergio Adolfo Peniche Quintal', genero: 'M' },
-            { nombre: 'Alfredo Carrillo Arce', genero: 'M' }
+            { siglas: 'NAST', genero: 'F' },
+            { siglas: 'JLHH', genero: 'M' },
+            { siglas: 'SAPQ', genero: 'M' },
+            { siglas: 'ACA', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [
@@ -99,12 +101,12 @@ const CJPF_DATA = {
           salas: 4,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'José Avelino Orozco Córdoba', genero: 'M' },
-            { nombre: 'Marina Guadalupe Hernández Maldonado', genero: 'F' },
-            { nombre: 'Victoria Alejandra Espinosa Alanís', genero: 'F' },
-            { nombre: 'Edges Haydee de Santiago Wong', genero: 'F' },
-            { nombre: 'Víctor Manlio Hernández Calderón', genero: 'M' },
-            { nombre: 'Javier Antonio Mena Quintana', genero: 'M' }
+            { siglas: 'JAOC', genero: 'M' },
+            { siglas: 'MGHM', genero: 'F' },
+            { siglas: 'VAEA', genero: 'F' },
+            { siglas: 'EHSW', genero: 'F' },
+            { siglas: 'VMHC', genero: 'M' },
+            { siglas: 'JAMQ', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [
@@ -123,9 +125,9 @@ const CJPF_DATA = {
           salas: 2,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Oscar Molina Zavala', genero: 'M' },
-            { nombre: 'Jessica Anahi Alba Cisneros', genero: 'F' },
-            { nombre: 'Lilia Janeth Gámez Terrones', genero: 'F' }
+            { siglas: 'OMZ', genero: 'M' },
+            { siglas: 'JAAC', genero: 'F' },
+            { siglas: 'LJGT', genero: 'F' }
           ],
           magistrados: [],
           seguridad: [
@@ -143,12 +145,12 @@ const CJPF_DATA = {
           salas: 4,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Luis Manuel Cota Salcido', genero: 'M' },
-            { nombre: 'René Octavio Cardona González', genero: 'M' },
-            { nombre: 'Vianney Rodríguez Hernández', genero: 'F' },
-            { nombre: 'Arturo García Gil', genero: 'M' },
-            { nombre: 'José Rivas González', genero: 'M' },
-            { nombre: 'Estela Juárez Pulido', genero: 'F' }
+            { siglas: 'LMCS', genero: 'M' },
+            { siglas: 'ROCG', genero: 'M' },
+            { siglas: 'VRH', genero: 'F' },
+            { siglas: 'AGG', genero: 'M' },
+            { siglas: 'JRG', genero: 'M' },
+            { siglas: 'EJP', genero: 'F' }
           ],
           magistrados: [],
           seguridad: [
@@ -168,8 +170,8 @@ const CJPF_DATA = {
           salas: 2,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'José Noe Egure Yáñez', genero: 'M' },
-            { nombre: 'Ricardo Pablos Félix', genero: 'M' }
+            { siglas: 'JNEY', genero: 'M' },
+            { siglas: 'RPF', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [
@@ -189,11 +191,11 @@ const CJPF_DATA = {
           salas: 4,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Karla Paola Herrera Sepúlveda', genero: 'F' },
-            { nombre: 'Teresa Cruz García', genero: 'F' },
-            { nombre: 'Carlos Andrés Miranda Verdugo', genero: 'M' },
-            { nombre: 'Eucario Adame Pérez', genero: 'M' },
-            { nombre: 'Edgar Alejandro Domínguez Villapudua', genero: 'M' }
+            { siglas: 'KPHS', genero: 'F' },
+            { siglas: 'TCG', genero: 'F' },
+            { siglas: 'CAMV', genero: 'M' },
+            { siglas: 'EAP', genero: 'M' },
+            { siglas: 'EADV', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [
@@ -213,10 +215,10 @@ const CJPF_DATA = {
           salas: 3,
           inmueble: 'Centro de Justicia Penal Federal',
           jueces: [
-            { nombre: 'Cindy Sarai Portillo Tapia', genero: 'F' },
-            { nombre: 'Samantha Josefina López Armendáriz', genero: 'F' },
-            { nombre: 'Roberto Antonio Alcoverde Martínez', genero: 'M' },
-            { nombre: 'Edmundo Manuel Perusquia Cabañas', genero: 'M' }
+            { siglas: 'CSPT', genero: 'F' },
+            { siglas: 'SJLA', genero: 'F' },
+            { siglas: 'RAAM', genero: 'M' },
+            { siglas: 'EMPC', genero: 'M' }
           ],
           magistrados: [],
           seguridad: [

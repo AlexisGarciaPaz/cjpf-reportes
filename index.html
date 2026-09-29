@@ -229,7 +229,7 @@
     <legend><span class="n">3</span> Juez e imputados</legend>
     <label for="juez" id="lblJuez">Juez que resuelve</label>
     <select id="juez"></select>
-    <div class="hint" id="hintJuez">Define automáticamente "La Jueza" / "El Juez" en la resolución.</div>
+    <div class="hint" id="hintJuez">Se muestran solo las siglas. Define "La Jueza" / "El Juez" y sus siglas en la resolución.</div>
 
     <label for="imputados">Imputados (uno por línea)</label>
     <textarea id="imputados" placeholder="Rosario Alejandro Salazar Núñez
@@ -402,9 +402,9 @@ function actualizarSubBloques(){
 
 // ---- Construcción de la resolución en lenguaje natural ----
 function construirResolucion(){
-  // El valor del select es "tipo:genero" (ej. "J:F" = Jueza, "M:M" = Magistrado). Vacío = "La Jueza".
-  const [tipoJ, genJ] = document.getElementById('juez').value.split(':');
-  const sujeto = tratamiento(tipoJ || 'J', genJ || 'F');
+  // El valor del select es "tipo:genero:siglas" (ej. "J:F:ECRL" = Jueza ECRL). Vacío = "La Jueza".
+  const [tipoJ, genJ, siglasJ] = document.getElementById('juez').value.split(':');
+  const sujeto = tratamiento(tipoJ || 'J', genJ || 'F') + (siglasJ ? ' ' + siglasJ : '');
   const partes = [];
 
   if(sel.has('legal')) partes.push('calificó de legal la detención');
@@ -625,11 +625,6 @@ function tratamiento(tipo, genero){
   return genero==='M' ? 'El Juez' : 'La Jueza';
 }
 
-// "Erika Carolina Ramírez López" -> "ECRL" (ignora partículas en minúscula como "de")
-function iniciales(nombre){
-  return nombre.split(/\s+/).filter(p=>/^[A-ZÁÉÍÓÚÑ]/.test(p)).map(p=>p[0]).join('');
-}
-
 function nuevaOpcion(valor, texto){
   const o = document.createElement('option');
   o.value = valor;
@@ -673,14 +668,13 @@ function poblarJueces(c){
   const hayMag = !!(c && c.magistrados.length);
   document.getElementById('lblJuez').textContent = hayMag ? 'Juez o magistrado que resuelve' : 'Juez que resuelve';
   document.getElementById('hintJuez').textContent = hayMag
-    ? 'Define automáticamente "La Jueza" / "El Juez" o "La Magistrada" / "El Magistrado" en la resolución.'
-    : 'Define automáticamente "La Jueza" / "El Juez" en la resolución.';
+    ? 'Se muestran solo las siglas. Define "La Jueza" / "El Juez" o "La Magistrada" / "El Magistrado" y sus siglas en la resolución.'
+    : 'Se muestran solo las siglas. Define "La Jueza" / "El Juez" y sus siglas en la resolución.';
   if(!c) return;
 
   const agregar = (contenedor, lista, tipo)=>{
     lista.forEach(p=>{
-      contenedor.appendChild(nuevaOpcion(`${tipo}:${p.genero}`,
-        `${tratamiento(tipo,p.genero)} · ${p.nombre} (${iniciales(p.nombre)})`));
+      contenedor.appendChild(nuevaOpcion(`${tipo}:${p.genero}:${p.siglas}`, p.siglas));
     });
   };
   if(hayMag){
