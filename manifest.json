@@ -2,7 +2,7 @@
   "name": "CJPF Generador de Reportes",
   "short_name": "CJPF Reportes",
   "description": "Generador de reportes de audiencias · Coordinación de Seguridad CJPF",
-  "start_url": "/cjpf-reportes/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0b1f3a",
   "theme_color": "#0b1f3a",
