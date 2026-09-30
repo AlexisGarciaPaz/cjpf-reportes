@@ -83,19 +83,25 @@
     box-shadow:var(--sombra);padding:16px 16px 18px;margin-bottom:14px;
   }
   legend{
-    font-size:.7rem;font-weight:700;letter-spacing:1.5px;
+    font-size:.8rem;font-weight:700;letter-spacing:1.5px;
     text-transform:uppercase;color:var(--azul-claro);
-    padding:0 8px;display:flex;align-items:center;gap:7px;
+    padding:0;display:flex;align-items:center;gap:7px;
+    /* float saca el título del borde del recuadro y lo deja dentro, como primera línea */
+    float:left;width:100%;margin-bottom:4px;
   }
+  legend + *{clear:both}
   legend .n{
     background:var(--azul-toga);color:var(--oro-claro);
-    width:20px;height:20px;border-radius:50%;
+    width:22px;height:22px;border-radius:50%;flex:0 0 auto;
     display:inline-flex;align-items:center;justify-content:center;
-    font-size:.68rem;
+    font-size:12px;font-weight:700;letter-spacing:0;line-height:1;
+    font-variant-numeric:tabular-nums;
+    /* Recorta el espacio de ascendentes/descendentes: el número queda centrado de verdad en el círculo */
+    text-box:trim-both cap alphabetic;
   }
-  label{display:block;font-size:.78rem;font-weight:600;color:var(--tinta-suave);margin:10px 0 4px}
+  label{display:block;font-size:.85rem;font-weight:600;color:var(--tinta-suave);margin:10px 0 4px}
   input,select,textarea{
-    width:100%;font-family:inherit;font-size:.92rem;
+    width:100%;font-family:inherit;font-size:16px;   /* 16px o más: evita que iPhone haga zoom al tocar el campo */
     padding:10px 11px;border:1px solid var(--papel-linea);
     border-radius:8px;background:#fdfdfb;color:var(--tinta);
     transition:border-color .15s,box-shadow .15s;
@@ -105,18 +111,41 @@
     box-shadow:0 0 0 3px rgba(45,90,140,.12);
   }
   textarea{resize:vertical;min-height:72px}
+  /* ---- Campo con botón × para borrar ---- */
+  .limpiable{position:relative}
+  .limpiable input{padding-right:44px}
+  .btn-x{
+    position:absolute;right:4px;top:50%;transform:translateY(-50%);
+    width:36px;height:36px;border:none;border-radius:50%;
+    background:transparent;color:var(--tinta-suave);
+    font-size:1.3rem;line-height:1;cursor:pointer;
+  }
+  .btn-x:hover,.btn-x:focus-visible{background:var(--papel-linea);color:var(--tinta);outline:none}
+  [hidden]{display:none!important}
+  .aviso-manual{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;
+    margin-top:6px;font-size:.75rem;color:var(--tinta-suave);
+  }
+  .aviso-manual button{
+    font-family:inherit;font-size:.78rem;font-weight:700;color:var(--azul-claro);
+    background:transparent;border:1.5px solid var(--papel-linea);border-radius:16px;
+    padding:6px 12px;cursor:pointer;
+  }
+  .aviso-manual button:hover{border-color:var(--azul-claro)}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   .row>div{flex:1;min-width:120px}
-  .hint{font-size:.7rem;color:var(--tinta-suave);margin-top:3px;font-weight:400}
+  .hint{font-size:.8rem;color:var(--tinta-suave);margin-top:3px;font-weight:400}
   /* ---- Chips de resolución ---- */
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .chip{
-    font-size:.8rem;padding:8px 13px;border-radius:20px;
+    display:inline-flex;align-items:center;min-height:44px;   /* área táctil mínima recomendada */
+    font-size:.85rem;padding:8px 14px;border-radius:22px;
     border:1.5px solid var(--papel-linea);background:#fff;
     cursor:pointer;user-select:none;transition:all .14s;
     color:var(--tinta-suave);font-weight:600;
   }
   .chip:hover{border-color:var(--azul-claro)}
+  .chip:focus-visible{outline:2px solid var(--azul-claro);outline-offset:2px}
   .chip.on{
     background:var(--azul-toga);color:#fff;border-color:var(--azul-toga);
   }
@@ -131,7 +160,7 @@
   @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
   .sub-block label:first-child{margin-top:0}
   .grupo-titulo{
-    font-size:.72rem;font-weight:700;color:var(--azul-claro);
+    font-size:.8rem;font-weight:700;color:var(--azul-claro);
     text-transform:uppercase;letter-spacing:1px;margin:14px 0 4px;
   }
   /* ---- Vista previa ---- */
@@ -143,7 +172,7 @@
     background:var(--azul-toga);color:#fff;padding:11px 16px;
     display:flex;justify-content:space-between;align-items:center;
   }
-  .preview-head span{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--oro-claro)}
+  .preview-head span{font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--oro-claro)}
   #salida{
     white-space:pre-wrap;word-wrap:break-word;
     font-family:"SF Mono",Consolas,Menlo,monospace;
@@ -160,13 +189,15 @@
   }
   .btn{
     flex:1;font-family:inherit;font-size:.9rem;font-weight:700;
-    padding:13px;border:none;border-radius:9px;cursor:pointer;
+    padding:13px 8px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;
     transition:transform .1s,filter .15s;letter-spacing:.3px;
   }
   .btn:active{transform:scale(.98)}
   .btn-copiar{background:var(--azul-toga);color:#fff}
   .btn-copiar:hover{filter:brightness(1.15)}
-  .btn-limpiar{background:transparent;color:var(--tinta-suave);border:1.5px solid var(--papel-linea);flex:0 0 auto;padding:13px 18px}
+  .btn-compartir{background:#fff;color:var(--azul-toga);border:1.5px solid var(--azul-toga)}
+  .btn-limpiar{background:transparent;color:var(--tinta-suave);border:1.5px solid var(--papel-linea);flex:0 0 auto;padding:13px 14px}
+  .pie{text-align:center;font-size:.75rem;color:var(--tinta-suave);margin-top:14px}
   .toast{
     position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
     background:var(--verde);color:#fff;padding:11px 22px;border-radius:24px;
@@ -174,6 +205,7 @@
     transition:all .3s;box-shadow:0 6px 20px rgba(47,125,79,.4);z-index:99;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.aviso{background:#8a5a00;box-shadow:0 6px 20px rgba(138,90,0,.35);width:max-content;max-width:calc(100% - 32px);text-align:center}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -216,11 +248,20 @@
       </div>
     </div>
 
+    <label id="lblModalidad">Modalidad</label>
+    <div class="chips" id="grupoModalidad" role="radiogroup" aria-labelledby="lblModalidad">
+      <div class="chip on" data-mod="Presencial" role="radio" aria-checked="true" tabindex="0">Presencial</div>
+      <div class="chip" data-mod="Virtual" role="radio" aria-checked="false" tabindex="-1">Virtual</div>
+    </div>
+
     <label for="causa">Causa Penal</label>
     <input type="text" id="causa" placeholder="Ej. 236/2026" inputmode="text" autocomplete="off">
 
     <label for="tipoAud">Tipo de audiencia (paréntesis)</label>
-    <input type="text" id="tipoAud" list="tiposAud" placeholder="Ej. Inicial con detenido">
+    <div class="limpiable">
+      <input type="text" id="tipoAud" list="tiposAud" placeholder="Ej. Inicial con detenido">
+      <button type="button" class="btn-x" data-para="tipoAud" aria-label="Borrar tipo de audiencia" hidden>×</button>
+    </div>
     <datalist id="tiposAud"></datalist>
   </fieldset>
 
@@ -232,8 +273,7 @@
     <div class="hint" id="hintJuez">Se muestran solo las siglas. Define "La Jueza" / "El Juez" y sus siglas en la resolución.</div>
 
     <label for="imputados">Imputados (uno por línea)</label>
-    <textarea id="imputados" placeholder="Rosario Alejandro Salazar Núñez
-Gustavo Reyes de Jesús"></textarea>
+    <textarea id="imputados" placeholder="Nombre completo del Imputado"></textarea>
     <div class="hint">Escribe cada nombre en una línea. Se listan con guion automáticamente.</div>
   </fieldset>
 
@@ -241,7 +281,10 @@ Gustavo Reyes de Jesús"></textarea>
   <fieldset>
     <legend><span class="n">4</span> Delito y horarios</legend>
     <label for="delito">Delito</label>
-    <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego...">
+    <div class="limpiable">
+      <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego...">
+      <button type="button" class="btn-x" data-para="delito" aria-label="Borrar delito" hidden>×</button>
+    </div>
     <datalist id="delitos"></datalist>
     <div class="row">
       <div>
@@ -330,6 +373,10 @@ Gustavo Reyes de Jesús"></textarea>
 
     <label for="resManual" style="margin-top:16px">Resolución (editable)</label>
     <textarea id="resManual" placeholder="Se arma sola al seleccionar arriba. También puedes escribirla a mano."></textarea>
+    <div class="aviso-manual" id="avisoManual" hidden>
+      <span>Editada a mano: las opciones de arriba ya no la cambian.</span>
+      <button type="button" id="btnRegenerar">Regenerar desde las opciones</button>
+    </div>
   </fieldset>
 
   <!-- 6. Quien reporta -->
@@ -348,14 +395,17 @@ Gustavo Reyes de Jesús"></textarea>
     </div>
     <div id="salida"></div>
   </div>
+
+  <p class="pie" id="version"></p>
 </div>
 
 <div class="barra">
+  <button class="btn btn-compartir" id="btnCompartir" hidden>Compartir</button>
   <button class="btn btn-copiar" id="btnCopiar">Copiar reporte</button>
   <button class="btn btn-limpiar" id="btnLimpiar">Limpiar</button>
 </div>
 
-<div class="toast" id="toast">Reporte copiado ✓</div>
+<div class="toast" id="toast" role="status" aria-live="polite">Reporte copiado ✓</div>
 
 <script src="data.js"></script>
 <script>
@@ -363,6 +413,10 @@ if(typeof CJPF_DATA === 'undefined'){
   document.getElementById('salida').textContent = 'Error: no se pudo cargar data.js';
   throw new Error('data.js no cargado');
 }
+
+// Versión visible al pie: cambiarla en cada publicación para saber, con una captura, si un teléfono ya se actualizó
+const VERSION_APP = '2026.09.29';
+document.getElementById('version').textContent = `Versión ${VERSION_APP}`;
 
 const MESES_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
@@ -398,10 +452,25 @@ function actualizarSubBloques(){
   document.getElementById('subProrroga').classList.toggle('show', sel.has('prorroga'));
   document.getElementById('subAbreviado').classList.toggle('show', sel.has('abreviado'));
   document.getElementById('subRepro').classList.toggle('show', sel.has('reprogramo'));
+  // Estado accesible de los chips (lectores de pantalla)
+  document.querySelectorAll('.chip[data-k]').forEach(c=>c.setAttribute('aria-pressed', sel.has(c.dataset.k)));
+}
+
+// ---- Resolución escrita a mano: si el usuario la edita, las opciones ya no la reemplazan ----
+let resEditadaAMano = false;
+function marcarResManual(valor){
+  resEditadaAMano = valor;
+  document.getElementById('avisoManual').hidden = !valor;
+}
+
+function numImputados(){
+  return document.getElementById('imputados').value.split('\n').filter(s=>s.trim()).length;
 }
 
 // ---- Construcción de la resolución en lenguaje natural ----
 function construirResolucion(){
+  if(resEditadaAMano){ armarSalida(); return; }
+  const varios = numImputados() > 1;
   // El valor del select es "tipo:genero:siglas" (ej. "J:F:ECRL" = Jueza ECRL). Vacío = "La Jueza".
   const [tipoJ, genJ, siglasJ] = document.getElementById('juez').value.split(':');
   const sujeto = tratamiento(tipoJ || 'J', genJ || 'F') + (siglasJ ? ' ' + siglasJ : '');
@@ -422,7 +491,7 @@ function construirResolucion(){
   }
 
   if(sel.has('vinculo')) partes.push('dictó auto de vinculación a proceso');
-  if(sel.has('novinculo')) partes.push('dictó auto de no vinculación a proceso y ordenó la inmediata libertad del imputado');
+  if(sel.has('novinculo')) partes.push(`dictó auto de no vinculación a proceso y ordenó la inmediata libertad ${varios ? 'de los imputados' : 'del imputado'}`);
 
   if(sel.has('pp')) partes.push('impuso prisión preventiva como medida cautelar');
   if(sel.has('ppo')) partes.push('impuso prisión preventiva oficiosa como medida cautelar');
@@ -442,7 +511,7 @@ function construirResolucion(){
   if(sel.has('abreviado')){
     const pena = document.getElementById('penaTxt').value.trim();
     partes.push(pena
-      ? `autorizó el procedimiento abreviado imponiendo una pena de ${pena} al hoy sentenciado`
+      ? `autorizó el procedimiento abreviado imponiendo una pena de ${pena} ${varios ? 'a los hoy sentenciados' : 'al hoy sentenciado'}`
       : 'autorizó el procedimiento abreviado');
   }
   if(sel.has('difirio')) partes.push('difirió la presente audiencia');
@@ -455,10 +524,12 @@ function construirResolucion(){
 
   if(partes.length===0){ document.getElementById('resManual').value=''; armarSalida(); return; }
 
-  // Conector final: "finalmente" antes del último si hay 3+
+  // Conector final: "y" con dos componentes; "finalmente" antes del último si hay 3+
   let frase;
   if(partes.length===1){
     frase = `${sujeto} ${partes[0]}.`;
+  } else if(partes.length===2){
+    frase = `${sujeto} ${partes[0]} y ${partes[1]}.`;
   } else {
     const ult = partes[partes.length-1];
     const previas = partes.slice(0,-1);
@@ -517,6 +588,8 @@ function armarSalida(){
 
 *EVENTO*: Audiencia sala #${sala}
 
+*Modalidad*: ${modalidadActual()}
+
 *Inmueble*: ${inmueble}
 
 > Causa Penal: ${causa}${tipoAud ? `\n(${tipoAud})` : ''}
@@ -535,14 +608,109 @@ Reporta:
 ${oficial}`;
 
   document.getElementById('salida').textContent = txt;
+  guardarBorrador();
+}
+
+// ---- Borrador: se guarda en el dispositivo para no perder el reporte si el teléfono cierra la app ----
+const CLAVE_BORRADOR = 'cjpf.borrador';
+const BORRADOR_VIGENCIA_MS = 24*60*60*1000;   // un borrador de más de 24 h se descarta
+const CAMPOS_BORRADOR = ['fecha','sala','causa','tipoAud','juez','imputados','delito','inicio','fin',
+  'dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','resManual'];
+const CAMPOS_CON_CONTENIDO = ['causa','tipoAud','imputados','delito','inicio','fin','resManual'];
+let borradorListo = false;   // evita guardar durante el arranque, antes de restaurar
+
+function guardarBorrador(){
+  if(!borradorListo) return;
+  const vacio = sel.size===0 && CAMPOS_CON_CONTENIDO.every(id=>!document.getElementById(id).value.trim());
+  if(vacio){ try{ localStorage.removeItem(CLAVE_BORRADOR); }catch(e){} return; }
+  const campos = {};
+  CAMPOS_BORRADOR.forEach(id=>campos[id]=document.getElementById(id).value);
+  guardar(CLAVE_BORRADOR, JSON.stringify({
+    t: Date.now(), campos, chips:[...sel], modalidad: modalidadActual(), manual: resEditadaAMano
+  }));
+}
+
+function restaurarBorrador(){
+  let b;
+  try{ b = JSON.parse(leer(CLAVE_BORRADOR)); }catch(e){ return; }
+  if(!b || !b.campos || Date.now()-b.t > BORRADOR_VIGENCIA_MS) return;
+  CAMPOS_BORRADOR.forEach(id=>{
+    const el = document.getElementById(id), v = b.campos[id];
+    if(v==null) return;
+    // En los select solo se pone el valor si existe en la lista (ej. el juez de otro centro)
+    if(el.tagName==='SELECT' && !Array.from(el.options).some(o=>o.value===v)) return;
+    el.value = v;
+  });
+  (b.chips||[]).forEach(k=>{
+    const chip = document.querySelector(`.chip[data-k="${k}"]`);
+    if(chip){ sel.add(k); chip.classList.add('on'); }
+  });
+  actualizarSubBloques();
+  marcarResManual(!!b.manual);
+  actualizarBotonesX();
+  if(b.modalidad) ponerModalidad(b.modalidad);
 }
 
 // ---- Listeners ----
-document.querySelectorAll('.chip').forEach(c=>{
+document.querySelectorAll('.chip[data-k]').forEach(c=>{
+  c.setAttribute('role','button');
+  c.setAttribute('aria-pressed','false');
+  c.tabIndex = 0;
   c.addEventListener('click',()=>toggleChip(c));
+  c.addEventListener('keydown',e=>{
+    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggleChip(c); }
+  });
 });
-['fecha','sala','causa','tipoAud','delito','inicio','fin','imputados','resManual','oficialCustom']
+
+// Modalidad: una sola opción activa (Presencial / Virtual)
+function ponerModalidad(valor){
+  document.querySelectorAll('#grupoModalidad .chip').forEach(c=>{
+    const on = c.dataset.mod===valor;
+    c.classList.toggle('on', on);
+    c.setAttribute('aria-checked', on);
+    c.tabIndex = on ? 0 : -1;
+  });
+  armarSalida();
+}
+function modalidadActual(){
+  return document.querySelector('#grupoModalidad .chip.on')?.dataset.mod || 'Presencial';
+}
+document.querySelectorAll('#grupoModalidad .chip').forEach(c=>{
+  c.addEventListener('click',()=>ponerModalidad(c.dataset.mod));
+  c.addEventListener('keydown',e=>{
+    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); ponerModalidad(c.dataset.mod); }
+  });
+});
+['fecha','sala','causa','tipoAud','delito','inicio','fin','oficialCustom']
   .forEach(id=>document.getElementById(id).addEventListener('input',armarSalida));
+// Imputados: el número cambia el singular/plural de la resolución
+document.getElementById('imputados').addEventListener('input',construirResolucion);
+
+// Si el usuario escribe en la resolución, queda "a mano". Si la vacía por completo, vuelve a ser automática.
+document.getElementById('resManual').addEventListener('input',e=>{
+  marcarResManual(e.target.value.trim()!=='');
+  armarSalida();
+});
+document.getElementById('btnRegenerar').addEventListener('click',()=>{
+  marcarResManual(false);
+  construirResolucion();
+});
+
+// Botón × de Tipo de audiencia y Delito: vacía el campo y deja el cursor ahí para elegir otra opción
+function actualizarBotonesX(){
+  document.querySelectorAll('.btn-x').forEach(b=>{
+    b.hidden = !document.getElementById(b.dataset.para).value;
+  });
+}
+document.querySelectorAll('.btn-x').forEach(b=>{
+  const campo = document.getElementById(b.dataset.para);
+  campo.addEventListener('input',actualizarBotonesX);
+  b.addEventListener('click',()=>{
+    campo.value = '';
+    campo.dispatchEvent(new Event('input'));
+    campo.focus();
+  });
+});
 
 document.getElementById('juez').addEventListener('change',construirResolucion);
 ['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt']
@@ -563,6 +731,37 @@ document.getElementById('region').addEventListener('change',()=>{
 });
 document.getElementById('centro').addEventListener('change',aplicarCentro);
 
+// Campos vacíos del reporte: se avisa al copiar o compartir, pero no se impide
+function camposFaltantes(){
+  const v = id => document.getElementById(id).value.trim();
+  const falta = [];
+  if(!centroActual()) falta.push('centro');
+  if(!v('causa')) falta.push('causa');
+  if(!v('imputados')) falta.push('imputados');
+  if(!v('delito')) falta.push('delito');
+  if(!v('inicio')) falta.push('hora de inicio');
+  if(!v('fin')) falta.push('hora de fin');
+  if(!v('resManual')) falta.push('resolución');
+  const of = v('oficial');
+  if(!of || (of==='__custom' && !v('oficialCustom'))) falta.push('oficial');
+  return falta;
+}
+
+let toastTimer;
+function mostrarToast(texto, aviso){
+  const t = document.getElementById('toast');
+  t.textContent = texto;
+  t.classList.toggle('aviso', !!aviso);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), aviso ? 4000 : 1800);
+}
+function avisoTrasEnviar(hecho){
+  const falta = camposFaltantes();
+  if(falta.length) mostrarToast(`${hecho}. Falta: ${falta.join(', ')}`, true);
+  else mostrarToast(`${hecho} ✓`);
+}
+
 // Copiar
 document.getElementById('btnCopiar').addEventListener('click',async()=>{
   const txt = document.getElementById('salida').textContent;
@@ -573,23 +772,37 @@ document.getElementById('btnCopiar').addEventListener('click',async()=>{
     ta.value=txt;document.body.appendChild(ta);ta.select();
     document.execCommand('copy');ta.remove();
   }
-  const t=document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),1800);
+  avisoTrasEnviar('Reporte copiado');
 });
+
+// Compartir (menú nativo del teléfono: WhatsApp, etc.). Solo aparece si el navegador lo permite.
+if(navigator.share){
+  const btn = document.getElementById('btnCompartir');
+  btn.hidden = false;
+  btn.addEventListener('click',async()=>{
+    const falta = camposFaltantes();
+    if(falta.length) mostrarToast(`Falta: ${falta.join(', ')}`, true);
+    try{
+      await navigator.share({ text: document.getElementById('salida').textContent });
+    }catch(e){ /* el usuario cerró el menú de compartir */ }
+  });
+}
 
 // Limpiar
 document.getElementById('btnLimpiar').addEventListener('click',()=>{
   if(!confirm('¿Limpiar todos los campos?')) return;
+  // Se conservan fecha (se pone la de hoy) y oficial; las horas sí se borran
   document.querySelectorAll('input,textarea').forEach(el=>{
-    if(el.type!=='date'&&el.type!=='time'&&el.id!=='oficialCustom') el.value='';
+    if(el.type!=='date'&&el.id!=='oficialCustom') el.value='';
   });
   document.getElementById('juez').selectedIndex=0;
   sel.clear();
-  document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.chip[data-k].on').forEach(c=>c.classList.remove('on'));
   actualizarSubBloques();
+  marcarResManual(false);
   ponerFechaHoy();
-  armarSalida();
+  actualizarBotonesX();
+  ponerModalidad('Presencial');   // llama a armarSalida()
 });
 
 // Fecha de hoy por defecto
@@ -642,6 +855,8 @@ function poblarRegiones(){
   const sel = document.getElementById('region');
   sel.innerHTML = '';
   REGIONES.forEach(r=>sel.appendChild(nuevaOpcion(r.id, r.nombre)));
+  // Con una sola región el selector no aporta nada: se oculta hasta que exista otra en data.js
+  sel.parentElement.hidden = REGIONES.length < 2;
 }
 
 function poblarCentros(){
@@ -744,6 +959,9 @@ poblarCentros();
 restaurarCentro();
 ponerFechaHoy();
 aplicarCentro();
+restaurarBorrador();
+borradorListo = true;
+construirResolucion();   // llama a armarSalida() y guarda el borrador
 
 // Registrar service worker para PWA
 if('serviceWorker' in navigator){

@@ -239,7 +239,7 @@ const CJPF_DATA = {
     // Frecuentes (los que ya usaba la app)
     'Inicial con detenido',
     'Inicial con detenidos',
-    'Continuación de inicial',
+    'Continuación de audiencia inicial',
     'Inicial',
     'Intermedia',
     'Cierre de investigación',
@@ -262,7 +262,6 @@ const CJPF_DATA = {
     'Competencia',
     'Cómputo de la pena',
     'Continuación',
-    'Continuación de audiencia inicial',
     'Contrabando',
     'Control',
     'Controversia',
