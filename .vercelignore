@@ -1,0 +1,6 @@
+# Solo se publican los archivos de la app; nada de configuración local ni tokens
+/*
+!index.html
+!data.js
+!sw.js
+!manifest.json
