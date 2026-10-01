@@ -163,6 +163,41 @@
     font-size:.8rem;font-weight:700;color:var(--azul-claro);
     text-transform:uppercase;letter-spacing:1px;margin:14px 0 4px;
   }
+  /* ---- Botón secundario (Agregar delito / receso) ---- */
+  .btn-sec{
+    font-family:inherit;font-size:.85rem;font-weight:700;color:var(--azul-claro);
+    background:#fff;border:1.5px solid var(--papel-linea);border-radius:8px;
+    padding:0 14px;min-height:44px;cursor:pointer;white-space:nowrap;
+  }
+  .btn-sec:hover,.btn-sec:focus-visible{border-color:var(--azul-claro);outline:none}
+  .campo-agregar{display:flex;gap:8px}
+  .campo-agregar .limpiable{flex:1}
+  /* ---- Delitos agregados: etiquetas con × ---- */
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .tags:empty{display:none}
+  .tag{
+    display:inline-flex;align-items:center;gap:2px;
+    background:var(--papel);border:1px solid var(--papel-linea);border-radius:18px;
+    padding:3px 3px 3px 12px;font-size:.85rem;color:var(--tinta);
+  }
+  .tag button{
+    width:34px;height:34px;border:none;border-radius:50%;background:transparent;
+    color:var(--tinta-suave);font-size:1.15rem;line-height:1;cursor:pointer;flex:0 0 auto;
+  }
+  .tag button:hover,.tag button:focus-visible{background:var(--papel-linea);color:var(--tinta);outline:none}
+  /* ---- Nivel de peligrosidad: círculo de color ---- */
+  .punto{width:12px;height:12px;border-radius:50%;margin-right:8px;flex:0 0 auto;box-shadow:0 0 0 2px #fff}
+  .punto.bajo{background:#2f9e44}
+  .punto.medio{background:#e0a800}
+  .punto.alto{background:#c92a2a}
+  /* ---- Recesos ---- */
+  .receso{padding:10px 0;border-top:1px solid var(--papel-linea)}
+  .receso:first-child{border-top:none;padding-top:0}
+  .receso-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .receso-head .grupo-titulo{margin:0}
+  .receso label{margin-top:6px}
+  .receso input[readonly]{background:var(--papel);font-weight:600;cursor:default}
+  #btnAgregarReceso{margin-top:10px}
   /* ---- Vista previa ---- */
   .preview-card{
     background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);
@@ -250,8 +285,17 @@
 
     <label id="lblModalidad">Modalidad</label>
     <div class="chips" id="grupoModalidad" role="radiogroup" aria-labelledby="lblModalidad">
-      <div class="chip on" data-mod="Presencial" role="radio" aria-checked="true" tabindex="0">Presencial</div>
-      <div class="chip" data-mod="Virtual" role="radio" aria-checked="false" tabindex="-1">Virtual</div>
+      <div class="chip on" data-val="Presencial" role="radio" aria-checked="true" tabindex="0">Presencial</div>
+      <div class="chip" data-val="Virtual" role="radio" aria-checked="false" tabindex="-1">Virtual</div>
+      <div class="chip" data-val="Mixta" role="radio" aria-checked="false" tabindex="-1">Mixta</div>
+    </div>
+    <div class="hint">Mixta: la audiencia es presencial y una o más partes se conectan a distancia.</div>
+
+    <label id="lblPeligro">Nivel de peligrosidad</label>
+    <div class="chips" id="grupoPeligro" role="radiogroup" aria-labelledby="lblPeligro">
+      <div class="chip" data-val="Bajo" role="radio" aria-checked="false" tabindex="0"><span class="punto bajo" aria-hidden="true"></span>Bajo</div>
+      <div class="chip" data-val="Medio" role="radio" aria-checked="false" tabindex="-1"><span class="punto medio" aria-hidden="true"></span>Medio</div>
+      <div class="chip" data-val="Alto" role="radio" aria-checked="false" tabindex="-1"><span class="punto alto" aria-hidden="true"></span>Alto</div>
     </div>
 
     <label for="causa">Causa Penal</label>
@@ -279,13 +323,18 @@
 
   <!-- 4. Delito y horarios -->
   <fieldset>
-    <legend><span class="n">4</span> Delito y horarios</legend>
-    <label for="delito">Delito</label>
-    <div class="limpiable">
-      <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego...">
-      <button type="button" class="btn-x" data-para="delito" aria-label="Borrar delito" hidden>×</button>
+    <legend><span class="n">4</span> Delitos y horarios</legend>
+    <label for="delito">Delitos</label>
+    <div class="campo-agregar">
+      <div class="limpiable">
+        <input type="text" id="delito" list="delitos" placeholder="Ej. Portación de arma de fuego..." enterkeyhint="done">
+        <button type="button" class="btn-x" data-para="delito" aria-label="Borrar delito" hidden>×</button>
+      </div>
+      <button type="button" class="btn-sec" id="btnAgregarDelito">Agregar</button>
     </div>
     <datalist id="delitos"></datalist>
+    <div class="tags" id="listaDelitos"></div>
+    <div class="hint">Elige o escribe el delito y presiona Agregar; repite para agregar más. Si no está en la lista, escríbelo completo.</div>
     <div class="row">
       <div>
         <label for="inicio">Inició</label>
@@ -296,11 +345,47 @@
         <input type="time" id="fin">
       </div>
     </div>
+
+    <label id="lblReceso">¿Hubo receso?</label>
+    <div class="chips" id="grupoReceso" role="radiogroup" aria-labelledby="lblReceso">
+      <div class="chip on" data-val="No" role="radio" aria-checked="true" tabindex="0">No</div>
+      <div class="chip" data-val="Sí" role="radio" aria-checked="false" tabindex="-1">Sí</div>
+    </div>
+    <div class="sub-block" id="subReceso">
+      <div id="listaRecesos"></div>
+      <button type="button" class="btn-sec" id="btnAgregarReceso">+ Agregar receso</button>
+      <div class="hint">Registra la hora de inicio y de reanudación; el tiempo de receso se calcula solo.</div>
+    </div>
   </fieldset>
 
-  <!-- 5. Resolución -->
+  <!-- 5. Asistencia -->
   <fieldset>
-    <legend><span class="n">5</span> Resolución</legend>
+    <legend><span class="n">5</span> Asistencia</legend>
+    <label id="lblPublico">¿Hay público presente?</label>
+    <div class="chips" id="grupoPublico" role="radiogroup" aria-labelledby="lblPublico">
+      <div class="chip on" data-val="No" role="radio" aria-checked="true" tabindex="0">No</div>
+      <div class="chip" data-val="Sí" role="radio" aria-checked="false" tabindex="-1">Sí</div>
+    </div>
+    <div class="sub-block" id="subPublico">
+      <label for="publicoNum">Cantidad de personas</label>
+      <input type="number" id="publicoNum" inputmode="numeric" min="1" placeholder="Ej. 12">
+    </div>
+
+    <label id="lblTestigos">¿Hay testigos?</label>
+    <div class="chips" id="grupoTestigos" role="radiogroup" aria-labelledby="lblTestigos">
+      <div class="chip on" data-val="No" role="radio" aria-checked="true" tabindex="0">No</div>
+      <div class="chip" data-val="Sí" role="radio" aria-checked="false" tabindex="-1">Sí</div>
+    </div>
+    <div class="sub-block" id="subTestigos">
+      <label for="testigosNum">Cantidad de testigos</label>
+      <input type="number" id="testigosNum" inputmode="numeric" min="1" placeholder="Ej. 3">
+    </div>
+    <div class="hint">Con "No", el dato no aparece en el reporte.</div>
+  </fieldset>
+
+  <!-- 6. Resolución -->
+  <fieldset>
+    <legend><span class="n">6</span> Resolución</legend>
     <div class="hint" style="margin-bottom:6px">Selecciona los componentes en el orden en que ocurrieron. Se arman en un solo párrafo.</div>
 
     <div class="grupo-titulo">Detención / Vinculación</div>
@@ -359,8 +444,11 @@
     <div class="grupo-titulo">Intermedia / Otras</div>
     <div class="chips" id="grupoOtras">
       <div class="chip" data-k="abreviado">Procedimiento abreviado + pena</div>
+      <div class="chip" data-k="pruebas">Desahogo de medios de prueba</div>
       <div class="chip" data-k="difirio">Difirió la audiencia</div>
+      <div class="chip warn" data-k="incomparecencia">Difirió por incomparecencia</div>
       <div class="chip" data-k="reprogramo">Reprogramó audiencia</div>
+      <div class="chip" data-k="otraRes">Otro (escribir)…</div>
     </div>
     <div class="sub-block" id="subAbreviado">
       <label>Pena impuesta (texto):</label>
@@ -369,6 +457,10 @@
     <div class="sub-block" id="subRepro">
       <label>Nueva fecha y hora (opcional):</label>
       <input type="text" id="reproTxt" placeholder="Ej. 22 de Junio de 2026 a las 12:00 horas">
+    </div>
+    <div class="sub-block" id="subOtraRes">
+      <label for="otraResTxt">Otra resolución (continúa la frase del juez):</label>
+      <input type="text" id="otraResTxt" placeholder="Ej. ordenó girar oficio a la autoridad penitenciaria">
     </div>
 
     <label for="resManual" style="margin-top:16px">Resolución (editable)</label>
@@ -379,9 +471,9 @@
     </div>
   </fieldset>
 
-  <!-- 6. Quien reporta -->
+  <!-- 7. Quien reporta -->
   <fieldset>
-    <legend><span class="n">6</span> Reporta</legend>
+    <legend><span class="n">7</span> Reporta</legend>
     <label for="oficial">Oficial que reporta</label>
     <select id="oficial"></select>
     <input type="text" id="oficialCustom" placeholder="Ej. OC. Nombre completo" style="display:none;margin-top:8px">
@@ -415,13 +507,23 @@ if(typeof CJPF_DATA === 'undefined'){
 }
 
 // Versión visible al pie: cambiarla en cada publicación para saber, con una captura, si un teléfono ya se actualizó
-const VERSION_APP = '2026.09.29.2';
+const VERSION_APP = '2026.10.01.4';
 document.getElementById('version').textContent = `Versión ${VERSION_APP}`;
 
 const MESES_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 // ---- Estado de chips ----
 const sel = new Set();
+
+// ---- Delitos agregados y recesos (listas que el usuario arma) ----
+let delitos = [];
+let recesos = [];   // { inicio:'HH:MM', reanuda:'HH:MM' }
+
+// Grupos de opción única y su valor al abrir o limpiar ('' = sin elegir)
+const OPCIONES_INICIALES = {
+  grupoModalidad:'Presencial', grupoPeligro:'', grupoReceso:'No', grupoPublico:'No', grupoTestigos:'No'
+};
+const PELIGRO_ICONO = { Bajo:'🟢', Medio:'🟡', Alto:'🔴' };
 
 function toggleChip(chip){
   const k = chip.dataset.k;
@@ -431,7 +533,7 @@ function toggleChip(chip){
     vinculo:['novinculo'], novinculo:['vinculo','meses','pp','ppo'],
     dup72:['dup144'], dup144:['dup72'],
     meses:['prorroga','decreto','novinculo'], prorroga:['meses','decreto'], decreto:['meses','prorroga'],
-    difirio:['reprogramo'], reprogramo:['difirio']
+    difirio:['reprogramo','incomparecencia'], reprogramo:['difirio'], incomparecencia:['difirio']
   };
   if(sel.has(k)){
     sel.delete(k); chip.classList.remove('on');
@@ -452,6 +554,10 @@ function actualizarSubBloques(){
   document.getElementById('subProrroga').classList.toggle('show', sel.has('prorroga'));
   document.getElementById('subAbreviado').classList.toggle('show', sel.has('abreviado'));
   document.getElementById('subRepro').classList.toggle('show', sel.has('reprogramo'));
+  document.getElementById('subOtraRes').classList.toggle('show', sel.has('otraRes'));
+  document.getElementById('subReceso').classList.toggle('show', opcion('grupoReceso')==='Sí');
+  document.getElementById('subPublico').classList.toggle('show', opcion('grupoPublico')==='Sí');
+  document.getElementById('subTestigos').classList.toggle('show', opcion('grupoTestigos')==='Sí');
   // Estado accesible de los chips (lectores de pantalla)
   document.querySelectorAll('.chip[data-k]').forEach(c=>c.setAttribute('aria-pressed', sel.has(c.dataset.k)));
 }
@@ -514,12 +620,18 @@ function construirResolucion(){
       ? `autorizó el procedimiento abreviado imponiendo una pena de ${pena} ${varios ? 'a los hoy sentenciados' : 'al hoy sentenciado'}`
       : 'autorizó el procedimiento abreviado');
   }
+  if(sel.has('pruebas')) partes.push('continuó con el desahogo de medios de prueba');
   if(sel.has('difirio')) partes.push('difirió la presente audiencia');
+  if(sel.has('incomparecencia')) partes.push(`difirió la presente audiencia por incomparecencia ${varios ? 'de los imputados' : 'del imputado'}, dejando a salvo los derechos de la Fiscalía`);
   if(sel.has('reprogramo')){
     const r = document.getElementById('reproTxt').value.trim();
     partes.push(r
       ? `reprogramó la presente audiencia para el ${r}`
       : 'reprogramó la audiencia');
+  }
+  if(sel.has('otraRes')){
+    const otra = textoOtraRes();
+    if(otra) partes.push(otra);
   }
 
   if(partes.length===0){ document.getElementById('resManual').value=''; armarSalida(); return; }
@@ -540,7 +652,127 @@ function construirResolucion(){
   armarSalida();
 }
 
+// Texto libre de "Otro": se integra a la frase, sin punto final y con minúscula inicial (salvo siglas, ej. UMECA)
+function textoOtraRes(){
+  let t = document.getElementById('otraResTxt').value.trim().replace(/\.+$/,'').trim();
+  if(t.length>1 && t[1]===t[1].toLowerCase()) t = t[0].toLowerCase() + t.slice(1);
+  return t;
+}
+
 function formatoHora(t){ return t ? t.slice(0,5) : ''; }
+
+// ---- Horas de receso ----
+function aMinutos(hhmm){ const [h,m] = hhmm.split(':').map(Number); return h*60+m; }
+function diferenciaMin(a,b){ return (a && b) ? (aMinutos(b)-aMinutos(a)+1440) % 1440 : 0; }
+function duracionTxt(min){
+  if(min<60) return `${min} min`;
+  const h = Math.floor(min/60), m = min%60;
+  return `${h} h${m ? ` ${m} min` : ''}`;
+}
+
+// ---- Delitos: lista agregada + lo que quedó escrito sin presionar "Agregar" ----
+function limpiarDelito(t){ return t.trim().replace(/\.+$/,'').trim(); }
+function existeDelito(t){ return delitos.some(d=>d.toLowerCase()===t.toLowerCase()); }
+function delitosReporte(){
+  const pendiente = limpiarDelito(document.getElementById('delito').value);
+  return (pendiente && !existeDelito(pendiente)) ? [...delitos, pendiente] : [...delitos];
+}
+
+function agregarDelito(){
+  const campo = document.getElementById('delito');
+  const t = limpiarDelito(campo.value);
+  if(t && !existeDelito(t)) delitos.push(t);
+  campo.value = '';
+  actualizarBotonesX();
+  pintarDelitos();
+  armarSalida();
+  campo.focus();
+}
+
+function pintarDelitos(){
+  const cont = document.getElementById('listaDelitos');
+  cont.innerHTML = '';
+  delitos.forEach((d,i)=>{
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.appendChild(document.createTextNode(d));
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = '×';
+    b.setAttribute('aria-label', `Quitar ${d}`);
+    b.addEventListener('click',()=>{ delitos.splice(i,1); pintarDelitos(); armarSalida(); });
+    tag.appendChild(b);
+    cont.appendChild(tag);
+  });
+}
+
+// ---- Recesos: una fila por receso; el tiempo se calcula con inicio y reanudación ----
+function nuevoReceso(){ return { inicio:'', reanuda:'' }; }
+function tiempoReceso(r){
+  const min = diferenciaMin(r.inicio, r.reanuda);
+  return min>0 ? duracionTxt(min) : '';
+}
+
+function pintarRecesos(){
+  const cont = document.getElementById('listaRecesos');
+  cont.innerHTML = '';
+  recesos.forEach((r,i)=>{
+    const div = document.createElement('div');
+    div.className = 'receso';
+    div.innerHTML = `
+      <div class="receso-head">
+        <div class="grupo-titulo">Receso ${i+1}</div>
+        ${recesos.length>1 ? `<button type="button" class="btn-sec" aria-label="Quitar receso ${i+1}">Quitar</button>` : ''}
+      </div>
+      <div class="row">
+        <div><label for="rInicio${i}">Inicio</label><input type="time" id="rInicio${i}" data-f="inicio"></div>
+        <div><label for="rReanuda${i}">Reanudación</label><input type="time" id="rReanuda${i}" data-f="reanuda"></div>
+        <div><label for="rTiempo${i}">Tiempo</label><input type="text" id="rTiempo${i}" readonly tabindex="-1" placeholder="Automático"></div>
+      </div>`;
+    const campoTiempo = div.querySelector(`#rTiempo${i}`);
+    campoTiempo.value = tiempoReceso(r);
+    div.querySelectorAll('input[data-f]').forEach(inp=>{
+      const f = inp.dataset.f;
+      inp.value = r[f] || '';
+      inp.addEventListener('input',()=>{
+        r[f] = inp.value;
+        campoTiempo.value = tiempoReceso(r);
+        armarSalida();
+      });
+    });
+    div.querySelector('.receso-head button')?.addEventListener('click',()=>{
+      recesos.splice(i,1);
+      pintarRecesos();
+      armarSalida();
+    });
+    cont.appendChild(div);
+  });
+}
+
+function lineasReceso(){
+  if(opcion('grupoReceso')!=='Sí') return '';
+  const usados = recesos.filter(r=>r.inicio||r.reanuda);
+  const lista = usados.length ? usados : [nuevoReceso()];
+  return lista.map((r,i)=>{
+    const et = lista.length>1 ? `Receso ${i+1}` : 'Receso';
+    const tiempo = tiempoReceso(r);
+    return `\n> ${et}: ${formatoHora(r.inicio)||'__:__'} a ${formatoHora(r.reanuda)||'__:__'} hrs.${tiempo ? ` (${tiempo})` : ''}`;
+  }).join('');
+}
+
+// Público y testigos: solo aparecen en el reporte cuando la respuesta es "Sí"
+function bloqueAsistencia(){
+  const lineas = [];
+  if(opcion('grupoPublico')==='Sí'){
+    const n = document.getElementById('publicoNum').value.trim();
+    lineas.push(`> Público presente: ${n||'___'} ${n==='1' ? 'persona' : 'personas'}`);
+  }
+  if(opcion('grupoTestigos')==='Sí'){
+    const n = document.getElementById('testigosNum').value.trim();
+    lineas.push(`> Testigos: ${n||'___'} ${n==='1' ? 'testigo' : 'testigos'}`);
+  }
+  return lineas.length ? `\n${lineas.join('\n')}\n` : '';
+}
 
 function fechaLarga(iso){
   if(!iso) return '__/_____/____';
@@ -554,8 +786,11 @@ function armarSalida(){
   const sala    = document.getElementById('sala').value;
   const causa   = document.getElementById('causa').value.trim() || '___/____';
   const tipoAud = document.getElementById('tipoAud').value.trim();
-  let delito    = document.getElementById('delito').value.trim();
-  delito = delito ? (delito.endsWith('.') ? delito : delito + '.') : '___';
+  const listaDel = delitosReporte();
+  const etDelito = listaDel.length>1 ? 'Delitos' : 'Delito';
+  const delito   = listaDel.length ? listaDel.join('; ') + '.' : '___';
+  const peligro  = opcion('grupoPeligro');
+  const peligroTxt = peligro ? `${PELIGRO_ICONO[peligro]} ${peligro}` : '___';
   const inicio  = formatoHora(document.getElementById('inicio').value) || '__:__';
   const fin     = formatoHora(document.getElementById('fin').value) || '__:__';
   const res     = document.getElementById('resManual').value.trim() || '___';
@@ -588,20 +823,22 @@ function armarSalida(){
 
 *EVENTO*: Audiencia sala #${sala}
 
-*Modalidad*: ${modalidadActual()}
+*Modalidad*: ${opcion('grupoModalidad') || 'Presencial'}
 
 *Inmueble*: ${inmueble}
+
+*Nivel de peligrosidad*: ${peligroTxt}
 
 > Causa Penal: ${causa}${tipoAud ? `\n(${tipoAud})` : ''}
 
 > ${etiqueta}:
 ${listaImp}
 
-> Delito: ${delito}
+> ${etDelito}: ${delito}
 
-> Inició: ${inicio} hrs.
+> Inició: ${inicio} hrs.${lineasReceso()}
 > Finalizó: ${fin} hrs.
-
+${bloqueAsistencia()}
 > Resolución: ${res}
 
 Reporta:
@@ -615,18 +852,19 @@ ${oficial}`;
 const CLAVE_BORRADOR = 'cjpf.borrador';
 const BORRADOR_VIGENCIA_MS = 24*60*60*1000;   // un borrador de más de 24 h se descarta
 const CAMPOS_BORRADOR = ['fecha','sala','causa','tipoAud','juez','imputados','delito','inicio','fin',
-  'dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','resManual'];
+  'dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt','publicoNum','testigosNum','resManual'];
 const CAMPOS_CON_CONTENIDO = ['causa','tipoAud','imputados','delito','inicio','fin','resManual'];
 let borradorListo = false;   // evita guardar durante el arranque, antes de restaurar
 
 function guardarBorrador(){
   if(!borradorListo) return;
-  const vacio = sel.size===0 && CAMPOS_CON_CONTENIDO.every(id=>!document.getElementById(id).value.trim());
+  const vacio = sel.size===0 && !delitos.length && CAMPOS_CON_CONTENIDO.every(id=>!document.getElementById(id).value.trim());
   if(vacio){ try{ localStorage.removeItem(CLAVE_BORRADOR); }catch(e){} return; }
   const campos = {};
   CAMPOS_BORRADOR.forEach(id=>campos[id]=document.getElementById(id).value);
   guardar(CLAVE_BORRADOR, JSON.stringify({
-    t: Date.now(), campos, chips:[...sel], modalidad: modalidadActual(), manual: resEditadaAMano
+    t: Date.now(), campos, chips:[...sel], manual: resEditadaAMano,
+    delitos, recesos, opciones: opcionesActuales()
   }));
 }
 
@@ -645,10 +883,16 @@ function restaurarBorrador(){
     const chip = document.querySelector(`.chip[data-k="${k}"]`);
     if(chip){ sel.add(k); chip.classList.add('on'); }
   });
+  delitos = Array.isArray(b.delitos) ? b.delitos : [];
+  recesos = Array.isArray(b.recesos) ? b.recesos : [];
+  pintarDelitos();
+  pintarRecesos();
+  const ops = b.opciones || {};
+  if(b.modalidad) ops.grupoModalidad = b.modalidad;   // borradores de la versión anterior
+  Object.keys(OPCIONES_INICIALES).forEach(g=>{ if(ops[g]!=null) ponerOpcion(g, ops[g]); });
   actualizarSubBloques();
   marcarResManual(!!b.manual);
   actualizarBotonesX();
-  if(b.modalidad) ponerModalidad(b.modalidad);
 }
 
 // ---- Listeners ----
@@ -662,26 +906,53 @@ document.querySelectorAll('.chip[data-k]').forEach(c=>{
   });
 });
 
-// Modalidad: una sola opción activa (Presencial / Virtual)
-function ponerModalidad(valor){
-  document.querySelectorAll('#grupoModalidad .chip').forEach(c=>{
-    const on = c.dataset.mod===valor;
+// Grupos de opción única (modalidad, peligrosidad, receso, público, testigos)
+function ponerOpcion(grupo, valor){
+  document.querySelectorAll(`#${grupo} .chip`).forEach((c,i)=>{
+    const on = c.dataset.val===valor;
     c.classList.toggle('on', on);
     c.setAttribute('aria-checked', on);
-    c.tabIndex = on ? 0 : -1;
+    c.tabIndex = (on || (!valor && i===0)) ? 0 : -1;
   });
+  // Al activar el receso se abre el primero vacío
+  if(grupo==='grupoReceso' && valor==='Sí' && !recesos.length){
+    recesos.push(nuevoReceso());
+    pintarRecesos();
+  }
+  actualizarSubBloques();
   armarSalida();
 }
-function modalidadActual(){
-  return document.querySelector('#grupoModalidad .chip.on')?.dataset.mod || 'Presencial';
+function opcion(grupo){
+  return document.querySelector(`#${grupo} .chip.on`)?.dataset.val || '';
 }
-document.querySelectorAll('#grupoModalidad .chip').forEach(c=>{
-  c.addEventListener('click',()=>ponerModalidad(c.dataset.mod));
-  c.addEventListener('keydown',e=>{
-    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); ponerModalidad(c.dataset.mod); }
+function opcionesActuales(){
+  const o = {};
+  Object.keys(OPCIONES_INICIALES).forEach(g=>o[g]=opcion(g));
+  return o;
+}
+document.querySelectorAll('[role="radiogroup"]').forEach(g=>{
+  g.querySelectorAll('.chip').forEach(c=>{
+    c.addEventListener('click',()=>ponerOpcion(g.id, c.dataset.val));
+    c.addEventListener('keydown',e=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); ponerOpcion(g.id, c.dataset.val); }
+    });
   });
 });
-['fecha','sala','causa','tipoAud','delito','inicio','fin','oficialCustom']
+
+// Delitos: botón Agregar o tecla Enter
+document.getElementById('btnAgregarDelito').addEventListener('click',agregarDelito);
+document.getElementById('delito').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){ e.preventDefault(); agregarDelito(); }
+});
+
+document.getElementById('btnAgregarReceso').addEventListener('click',()=>{
+  recesos.push(nuevoReceso());
+  pintarRecesos();
+  armarSalida();
+  document.querySelector('#listaRecesos .receso:last-child input')?.focus();
+});
+
+['fecha','sala','causa','tipoAud','delito','inicio','fin','publicoNum','testigosNum','oficialCustom']
   .forEach(id=>document.getElementById(id).addEventListener('input',armarSalida));
 // Imputados: el número cambia el singular/plural de la resolución
 document.getElementById('imputados').addEventListener('input',construirResolucion);
@@ -713,7 +984,7 @@ document.querySelectorAll('.btn-x').forEach(b=>{
 });
 
 document.getElementById('juez').addEventListener('change',construirResolucion);
-['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt']
+['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt']
   .forEach(id=>document.getElementById(id).addEventListener('input',construirResolucion));
 
 document.getElementById('oficial').addEventListener('change',e=>{
@@ -738,8 +1009,12 @@ function camposFaltantes(){
   if(!centroActual()) falta.push('centro');
   if(!v('causa')) falta.push('causa');
   if(!v('imputados')) falta.push('imputados');
-  if(!v('delito')) falta.push('delito');
+  if(!delitosReporte().length) falta.push('delito');
+  if(!opcion('grupoPeligro')) falta.push('nivel de peligrosidad');
   if(!v('inicio')) falta.push('hora de inicio');
+  if(opcion('grupoReceso')==='Sí' && !recesos.some(r=>r.inicio)) falta.push('inicio del receso');
+  if(opcion('grupoPublico')==='Sí' && !v('publicoNum')) falta.push('cantidad de público');
+  if(opcion('grupoTestigos')==='Sí' && !v('testigosNum')) falta.push('cantidad de testigos');
   if(!v('fin')) falta.push('hora de fin');
   if(!v('resManual')) falta.push('resolución');
   const of = v('oficial');
@@ -798,11 +1073,15 @@ document.getElementById('btnLimpiar').addEventListener('click',()=>{
   document.getElementById('juez').selectedIndex=0;
   sel.clear();
   document.querySelectorAll('.chip[data-k].on').forEach(c=>c.classList.remove('on'));
-  actualizarSubBloques();
+  delitos = [];
+  recesos = [];
+  pintarDelitos();
+  pintarRecesos();
   marcarResManual(false);
   ponerFechaHoy();
   actualizarBotonesX();
-  ponerModalidad('Presencial');   // llama a armarSalida()
+  // ponerOpcion actualiza los sub-bloques y llama a armarSalida()
+  Object.entries(OPCIONES_INICIALES).forEach(([g,v])=>ponerOpcion(g, v));
 });
 
 // Fecha de hoy por defecto

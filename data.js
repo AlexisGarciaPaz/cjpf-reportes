@@ -338,6 +338,7 @@ const CJPF_DATA = {
     'Contrabando',
     'Daño ecológico',
     'Daños a CFE',
+    'Daños a las vías de comunicación',
     'Defraudación Fiscal',
     'Defraudación fiscal equiparable',
     'Delincuencia Organizada',
