@@ -198,6 +198,9 @@
   .receso label{margin-top:6px}
   .receso input[readonly]{background:var(--papel);font-weight:600;cursor:default}
   #btnAgregarReceso{margin-top:10px}
+  .btn-mas{display:flex;align-items:center;gap:8px;margin-top:16px;width:100%;justify-content:center}
+  .btn-mas::after{content:"▾";font-size:.9rem;transition:transform .15s}
+  .btn-mas[aria-expanded="true"]::after{transform:rotate(180deg)}
   /* ---- Vista previa ---- */
   .preview-card{
     background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);
@@ -391,6 +394,7 @@
     <div class="grupo-titulo">Detención / Vinculación</div>
     <div class="chips" id="grupoVinc">
       <div class="chip" data-k="legal">Calificó legal la detención</div>
+      <div class="chip warn" data-k="ilegal">Calificó ilegal la detención · libertad</div>
       <div class="chip" data-k="vinculo">Vinculó a proceso</div>
       <div class="chip warn" data-k="novinculo">No vinculó · libertad</div>
     </div>
@@ -410,16 +414,37 @@
 
     <div class="grupo-titulo">Medida cautelar</div>
     <div class="chips" id="grupoMc">
-      <div class="chip" data-k="pp">Prisión preventiva</div>
+      <div class="chip" data-k="pp">Prisión preventiva justificada</div>
       <div class="chip" data-k="ppo">Prisión preventiva oficiosa</div>
-      <div class="chip alt" data-k="umeca">Presentación a UMECA</div>
+      <div class="chip alt" data-k="libertad">Libertad con medidas cautelares</div>
+      <div class="chip warn" data-k="nosolicito">No solicitada por Fiscalía</div>
+      <div class="chip" data-k="modmc">Modificó la medida cautelar</div>
+      <div class="chip" data-k="ratmc">Ratificó la medida cautelar</div>
       <div class="chip warn" data-k="negomc">Negó solicitud de defensa</div>
+    </div>
+    <div class="sub-block" id="subLibertad">
+      <label>Medidas impuestas (marca las que apliquen):</label>
+      <div class="chips" id="grupoMedidas">
+        <div class="chip" data-mc="umeca">Presentación periódica (UMECA)</div>
+        <div class="chip" data-mc="garantia">Garantía económica</div>
+        <div class="chip" data-mc="salir">Prohibición de salir del país o localidad</div>
+        <div class="chip" data-mc="localizador">Localizador electrónico</div>
+        <div class="chip" data-mc="domicilio">Resguardo domiciliario</div>
+        <div class="chip" data-mc="acercarse">No acercarse a víctimas o testigos</div>
+      </div>
+      <label for="mcOtraTxt">Otra medida (opcional):</label>
+      <input type="text" id="mcOtraTxt" placeholder="Ej. la prohibición de concurrir a determinados lugares">
+    </div>
+    <div class="sub-block" id="subModmc">
+      <label for="modmcTxt">Detalle de la modificación (opcional):</label>
+      <input type="text" id="modmcTxt" placeholder="Ej. de prisión preventiva a presentación periódica">
     </div>
 
     <div class="grupo-titulo">Cierre de investigación</div>
     <div class="chips" id="grupoCierre">
       <div class="chip" data-k="meses">Autorizó N meses cierre</div>
       <div class="chip" data-k="prorroga">Prórroga de N meses</div>
+      <div class="chip warn" data-k="negoProrroga">Negó prórroga</div>
       <div class="chip" data-k="decreto">Decretó cierre</div>
     </div>
     <div class="sub-block" id="subMeses">
@@ -441,18 +466,13 @@
       </select>
     </div>
 
-    <div class="grupo-titulo">Intermedia / Otras</div>
+    <div class="grupo-titulo">Desarrollo / Otras</div>
     <div class="chips" id="grupoOtras">
-      <div class="chip" data-k="abreviado">Procedimiento abreviado + pena</div>
       <div class="chip" data-k="pruebas">Desahogo de medios de prueba</div>
       <div class="chip" data-k="difirio">Difirió la audiencia</div>
       <div class="chip warn" data-k="incomparecencia">Difirió por incomparecencia</div>
       <div class="chip" data-k="reprogramo">Reprogramó audiencia</div>
       <div class="chip" data-k="otraRes">Otro (escribir)…</div>
-    </div>
-    <div class="sub-block" id="subAbreviado">
-      <label>Pena impuesta (texto):</label>
-      <input type="text" id="penaTxt" placeholder="Ej. 9 años, 5 meses, 24 días y 78 UMA">
     </div>
     <div class="sub-block" id="subRepro">
       <label>Nueva fecha y hora (opcional):</label>
@@ -461,6 +481,80 @@
     <div class="sub-block" id="subOtraRes">
       <label for="otraResTxt">Otra resolución (continúa la frase del juez):</label>
       <input type="text" id="otraResTxt" placeholder="Ej. ordenó girar oficio a la autoridad penitenciaria">
+    </div>
+
+    <!-- Grupos de uso menos frecuente: plegados para no alargar la pantalla -->
+    <button type="button" class="btn-sec btn-mas" id="btnMasRes" aria-expanded="false" aria-controls="masRes">Más resoluciones</button>
+    <div id="masRes" hidden>
+      <div class="grupo-titulo">Órdenes y técnicas de investigación</div>
+      <div class="chips" id="grupoOrdenes">
+        <div class="chip" data-k="ordenAp">Libró orden de aprehensión</div>
+        <div class="chip warn" data-k="negoAp">Negó orden de aprehensión</div>
+        <div class="chip" data-k="comparecencia">Orden de comparecencia</div>
+        <div class="chip" data-k="tecnica">Autorizó técnica de investigación</div>
+        <div class="chip warn" data-k="negoTecnica">Negó técnica de investigación</div>
+        <div class="chip" data-k="pruebaAnt">Prueba anticipada</div>
+        <div class="chip" data-k="reapertura">Reapertura de la investigación</div>
+      </div>
+      <div class="sub-block" id="subTecnica">
+        <label for="tecnicaTxt">Técnica (opcional):</label>
+        <input type="text" id="tecnicaTxt" list="tecnicas" placeholder="Ej. cateo">
+        <datalist id="tecnicas">
+          <option value="cateo"></option>
+          <option value="intervención de comunicaciones privadas"></option>
+          <option value="localización geográfica en tiempo real"></option>
+          <option value="entrega vigilada"></option>
+          <option value="toma de muestras"></option>
+        </datalist>
+      </div>
+
+      <div class="grupo-titulo">Soluciones alternas</div>
+      <div class="chips" id="grupoAlternas">
+        <div class="chip" data-k="scp">Suspensión condicional del proceso</div>
+        <div class="chip" data-k="acuerdo">Acuerdo reparatorio</div>
+      </div>
+      <div class="sub-block" id="subScp">
+        <label for="scpPlazo">Plazo de la suspensión (opcional):</label>
+        <input type="text" id="scpPlazo" placeholder="Ej. 1 año">
+      </div>
+
+      <div class="grupo-titulo">Intermedia y terminación</div>
+      <div class="chips" id="grupoIntermedia">
+        <div class="chip" data-k="apertura">Auto de apertura a juicio oral</div>
+        <div class="chip" data-k="sobreseimiento">Sobreseimiento</div>
+        <div class="chip" data-k="abreviado">Procedimiento abreviado + pena</div>
+      </div>
+      <div class="sub-block" id="subSobre">
+        <div class="row">
+          <div>
+            <label for="sobreTipo">Sobreseimiento:</label>
+            <select id="sobreTipo">
+              <option value="total">Total</option>
+              <option value="parcial">Parcial</option>
+            </select>
+          </div>
+          <div>
+            <label for="sobreDelito">Respecto del delito (si es parcial):</label>
+            <input type="text" id="sobreDelito" placeholder="Ej. Contra la Salud">
+          </div>
+        </div>
+      </div>
+      <div class="sub-block" id="subAbreviado">
+        <label>Pena impuesta (texto):</label>
+        <input type="text" id="penaTxt" placeholder="Ej. 9 años, 5 meses, 24 días y 78 UMA">
+      </div>
+
+      <div class="grupo-titulo">Juicio oral</div>
+      <div class="chips" id="grupoJuicio">
+        <div class="chip" data-k="condena">Fallo condenatorio</div>
+        <div class="chip alt" data-k="absuelve">Fallo absolutorio</div>
+        <div class="chip" data-k="individualiza">Individualización de sanciones</div>
+        <div class="chip" data-k="lectura">Lectura y explicación de sentencia</div>
+      </div>
+      <div class="sub-block" id="subIndividualiza">
+        <label for="penaJuicio">Pena impuesta (opcional):</label>
+        <input type="text" id="penaJuicio" placeholder="Ej. 8 años de prisión y 100 UMA">
+      </div>
     </div>
 
     <label for="resManual" style="margin-top:16px">Resolución (editable)</label>
@@ -507,7 +601,7 @@ if(typeof CJPF_DATA === 'undefined'){
 }
 
 // Versión visible al pie: cambiarla en cada publicación para saber, con una captura, si un teléfono ya se actualizó
-const VERSION_APP = '2026.10.01.4';
+const VERSION_APP = '2026.10.03.2';
 document.getElementById('version').textContent = `Versión ${VERSION_APP}`;
 
 const MESES_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -525,14 +619,32 @@ const OPCIONES_INICIALES = {
 };
 const PELIGRO_ICONO = { Bajo:'🟢', Medio:'🟡', Alto:'🔴' };
 
+// ---- Medidas cautelares distintas a la prisión (art. 155 CNPP), en el orden en que se redactan ----
+const medidas = new Set();
+const MEDIDAS_TEXTO = {
+  umeca:       'la presentación periódica ante UMECA',
+  garantia:    'la exhibición de una garantía económica',
+  salir:       'la prohibición de salir del país o de la localidad sin autorización',
+  localizador: 'la colocación de un localizador electrónico',
+  domicilio:   'el resguardo en su propio domicilio',
+  acercarse:   'la prohibición de acercarse o comunicarse con víctimas, ofendidos o testigos'
+};
+
 function toggleChip(chip){
   const k = chip.dataset.k;
   // Exclusividad dentro de grupos lógicos
   const exclusivos = {
-    pp:['ppo'], ppo:['pp'],
-    vinculo:['novinculo'], novinculo:['vinculo','meses','pp','ppo'],
+    legal:['ilegal'], ilegal:['legal'],
     dup72:['dup144'], dup144:['dup72'],
-    meses:['prorroga','decreto','novinculo'], prorroga:['meses','decreto'], decreto:['meses','prorroga'],
+    pp:['ppo','libertad','nosolicito'], ppo:['pp','libertad','nosolicito'],
+    libertad:['pp','ppo','nosolicito'], nosolicito:['pp','ppo','libertad','modmc','ratmc'],
+    modmc:['ratmc','nosolicito'], ratmc:['modmc','nosolicito'],
+    vinculo:['novinculo'], novinculo:['vinculo','meses','pp','ppo','libertad'],
+    meses:['prorroga','decreto','novinculo','negoProrroga'], prorroga:['meses','decreto','negoProrroga'],
+    negoProrroga:['meses','prorroga'], decreto:['meses','prorroga'],
+    apertura:['sobreseimiento'], sobreseimiento:['apertura'],
+    ordenAp:['negoAp'], negoAp:['ordenAp'], tecnica:['negoTecnica'], negoTecnica:['tecnica'],
+    condena:['absuelve'], absuelve:['condena','individualiza'], individualiza:['absuelve'],
     difirio:['reprogramo','incomparecencia'], reprogramo:['difirio'], incomparecencia:['difirio']
   };
   if(sel.has(k)){
@@ -550,6 +662,16 @@ function toggleChip(chip){
 
 function actualizarSubBloques(){
   document.getElementById('subDup').classList.toggle('show', sel.has('dup72')||sel.has('dup144'));
+  document.getElementById('subLibertad').classList.toggle('show', sel.has('libertad'));
+  document.getElementById('subScp').classList.toggle('show', sel.has('scp'));
+  document.getElementById('subModmc').classList.toggle('show', sel.has('modmc'));
+  document.getElementById('subTecnica').classList.toggle('show', sel.has('tecnica')||sel.has('negoTecnica'));
+  document.getElementById('subSobre').classList.toggle('show', sel.has('sobreseimiento'));
+  document.getElementById('subIndividualiza').classList.toggle('show', sel.has('individualiza'));
+  // Si hay algo elegido dentro de "Más resoluciones", se abre y el botón muestra cuántas
+  const elegidasMas = document.querySelectorAll('#masRes .chip[data-k].on').length;
+  if(elegidasMas) abrirMasRes(true);
+  document.getElementById('btnMasRes').textContent = `Más resoluciones${elegidasMas ? ` (${elegidasMas})` : ''}`;
   document.getElementById('subMeses').classList.toggle('show', sel.has('meses'));
   document.getElementById('subProrroga').classList.toggle('show', sel.has('prorroga'));
   document.getElementById('subAbreviado').classList.toggle('show', sel.has('abreviado'));
@@ -560,6 +682,30 @@ function actualizarSubBloques(){
   document.getElementById('subTestigos').classList.toggle('show', opcion('grupoTestigos')==='Sí');
   // Estado accesible de los chips (lectores de pantalla)
   document.querySelectorAll('.chip[data-k]').forEach(c=>c.setAttribute('aria-pressed', sel.has(c.dataset.k)));
+  document.querySelectorAll('.chip[data-mc]').forEach(c=>{
+    c.classList.toggle('on', medidas.has(c.dataset.mc));
+    c.setAttribute('aria-pressed', medidas.has(c.dataset.mc));
+  });
+}
+
+function abrirMasRes(abrir){
+  document.getElementById('masRes').hidden = !abrir;
+  document.getElementById('btnMasRes').setAttribute('aria-expanded', abrir);
+}
+
+// "a", "a y b", "a, b y c"
+function unirConY(lista){
+  return lista.length<2 ? lista.join('') : `${lista.slice(0,-1).join(', ')} y ${lista[lista.length-1]}`;
+}
+
+// Libertad con medidas cautelares: lista marcada + "Otra medida"
+function textoLibertad(varios){
+  const lista = Object.keys(MEDIDAS_TEXTO).filter(k=>medidas.has(k)).map(k=>MEDIDAS_TEXTO[k]);
+  const otra = document.getElementById('mcOtraTxt').value.trim().replace(/\.+$/,'').trim();
+  if(otra) lista.push(otra);
+  const sigue = `por lo que ${varios ? 'seguirán' : 'seguirá'} su proceso en libertad`;
+  if(!lista.length) return `impuso medidas cautelares distintas a la prisión preventiva, ${sigue}`;
+  return `impuso como ${lista.length>1 ? 'medidas cautelares' : 'medida cautelar'} ${unirConY(lista)}, ${sigue}`;
 }
 
 // ---- Resolución escrita a mano: si el usuario la edita, las opciones ya no la reemplazan ----
@@ -583,15 +729,16 @@ function construirResolucion(){
   const partes = [];
 
   if(sel.has('legal')) partes.push('calificó de legal la detención');
+  if(sel.has('ilegal')) partes.push(`calificó de ilegal la detención y ordenó la inmediata libertad ${varios ? 'de los imputados' : 'del imputado'}`);
 
   if(sel.has('dup72')||sel.has('dup144')){
     const h = document.getElementById('dupHora').value;
     const f = document.getElementById('dupFecha').value.trim();
     const plazo = sel.has('dup144') ? '144 hrs' : '72 hrs';
-    let txt = `la defensa solicitó la duplicidad del plazo de ${plazo}`;
+    let txt = `acordó la duplicidad del plazo de ${plazo} solicitada por la defensa`;
     if(h||f){
       const hora = h ? formatoHora(h) : '00:00';
-      txt += `, se señalaron las ${hora} horas del ${f||'___'} del año en curso para la continuación de la misma`;
+      txt += `, señalando las ${hora} horas del ${f||'___'} del año en curso para la continuación de la misma`;
     }
     partes.push(txt);
   }
@@ -599,9 +746,15 @@ function construirResolucion(){
   if(sel.has('vinculo')) partes.push('dictó auto de vinculación a proceso');
   if(sel.has('novinculo')) partes.push(`dictó auto de no vinculación a proceso y ordenó la inmediata libertad ${varios ? 'de los imputados' : 'del imputado'}`);
 
-  if(sel.has('pp')) partes.push('impuso prisión preventiva como medida cautelar');
+  if(sel.has('modmc')){
+    const det = document.getElementById('modmcTxt').value.trim().replace(/\.+$/,'').trim();
+    partes.push(`modificó la medida cautelar${det ? ` ${det}` : ''}`);
+  }
+  if(sel.has('ratmc')) partes.push('ratificó la medida cautelar impuesta');
+  if(sel.has('pp')) partes.push('impuso prisión preventiva justificada como medida cautelar');
   if(sel.has('ppo')) partes.push('impuso prisión preventiva oficiosa como medida cautelar');
-  if(sel.has('umeca')) partes.push('impuso como medida cautelar presentación periódica a UMECA');
+  if(sel.has('libertad')) partes.push(textoLibertad(varios));
+  if(sel.has('nosolicito')) partes.push('no impuso medida cautelar, al no haber sido solicitada por la Fiscalía');
   if(sel.has('negomc')) partes.push('negó la solicitud de la defensa');
 
   if(sel.has('meses')){
@@ -612,14 +765,49 @@ function construirResolucion(){
     const m = document.getElementById('prorrogaNum').value;
     partes.push(`autorizó prórroga de ${m} ${m==='1'?'mes':'meses'} para el cierre de investigación`);
   }
+  if(sel.has('negoProrroga')) partes.push('negó la prórroga del plazo de investigación');
   if(sel.has('decreto')) partes.push('decretó el cierre de la investigación complementaria');
 
+  const contra = varios ? 'de los imputados' : 'del imputado';
+  if(sel.has('ordenAp')) partes.push(`libró orden de aprehensión en contra ${contra}`);
+  if(sel.has('negoAp')) partes.push('negó la orden de aprehensión solicitada por la Fiscalía');
+  if(sel.has('comparecencia')) partes.push(`libró orden de comparecencia en contra ${contra}`);
+  if(sel.has('tecnica')||sel.has('negoTecnica')){
+    const t = document.getElementById('tecnicaTxt').value.trim().replace(/\.+$/,'').trim();
+    const verbo = sel.has('tecnica') ? 'autorizó' : 'negó';
+    partes.push(`${verbo} la técnica de investigación${t ? ` (${t})` : ''} solicitada por la Fiscalía`);
+  }
+  if(sel.has('pruebaAnt')) partes.push('desahogó la prueba anticipada');
+  if(sel.has('reapertura')) partes.push('autorizó la reapertura de la investigación');
+
+  if(sel.has('scp')){
+    const plazo = document.getElementById('scpPlazo').value.trim();
+    partes.push(`aprobó la suspensión condicional del proceso${plazo ? ` por un plazo de ${plazo}` : ''}`);
+  }
+  if(sel.has('acuerdo')) partes.push('aprobó el acuerdo reparatorio');
+
+  if(sel.has('apertura')) partes.push('dictó auto de apertura a juicio oral');
+  if(sel.has('sobreseimiento')){
+    if(document.getElementById('sobreTipo').value==='parcial'){
+      const d = document.getElementById('sobreDelito').value.trim().replace(/\.+$/,'').trim();
+      partes.push(`decretó el sobreseimiento parcial${d ? ` respecto del delito de ${d}` : ''}`);
+    } else partes.push('decretó el sobreseimiento total de la causa');
+  }
   if(sel.has('abreviado')){
     const pena = document.getElementById('penaTxt').value.trim();
     partes.push(pena
       ? `autorizó el procedimiento abreviado imponiendo una pena de ${pena} ${varios ? 'a los hoy sentenciados' : 'al hoy sentenciado'}`
       : 'autorizó el procedimiento abreviado');
   }
+  if(sel.has('condena')) partes.push('emitió fallo condenatorio');
+  if(sel.has('absuelve')) partes.push('emitió fallo absolutorio');
+  if(sel.has('individualiza')){
+    const pena = document.getElementById('penaJuicio').value.trim().replace(/\.+$/,'').trim();
+    partes.push(pena
+      ? `individualizó las sanciones imponiendo una pena de ${pena} ${varios ? 'a los sentenciados' : 'al sentenciado'}`
+      : 'llevó a cabo la individualización de sanciones');
+  }
+  if(sel.has('lectura')) partes.push('dio lectura y explicación de la sentencia');
   if(sel.has('pruebas')) partes.push('continuó con el desahogo de medios de prueba');
   if(sel.has('difirio')) partes.push('difirió la presente audiencia');
   if(sel.has('incomparecencia')) partes.push(`difirió la presente audiencia por incomparecencia ${varios ? 'de los imputados' : 'del imputado'}, dejando a salvo los derechos de la Fiscalía`);
@@ -852,7 +1040,8 @@ ${oficial}`;
 const CLAVE_BORRADOR = 'cjpf.borrador';
 const BORRADOR_VIGENCIA_MS = 24*60*60*1000;   // un borrador de más de 24 h se descarta
 const CAMPOS_BORRADOR = ['fecha','sala','causa','tipoAud','juez','imputados','delito','inicio','fin',
-  'dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt','publicoNum','testigosNum','resManual'];
+  'dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt','mcOtraTxt','scpPlazo','modmcTxt','tecnicaTxt','sobreTipo','sobreDelito','penaJuicio',
+  'publicoNum','testigosNum','resManual'];
 const CAMPOS_CON_CONTENIDO = ['causa','tipoAud','imputados','delito','inicio','fin','resManual'];
 let borradorListo = false;   // evita guardar durante el arranque, antes de restaurar
 
@@ -864,7 +1053,7 @@ function guardarBorrador(){
   CAMPOS_BORRADOR.forEach(id=>campos[id]=document.getElementById(id).value);
   guardar(CLAVE_BORRADOR, JSON.stringify({
     t: Date.now(), campos, chips:[...sel], manual: resEditadaAMano,
-    delitos, recesos, opciones: opcionesActuales()
+    delitos, recesos, medidas:[...medidas], opciones: opcionesActuales()
   }));
 }
 
@@ -879,10 +1068,15 @@ function restaurarBorrador(){
     if(el.tagName==='SELECT' && !Array.from(el.options).some(o=>o.value===v)) return;
     el.value = v;
   });
+  // Chips que cambiaron de nombre (borradores de versiones anteriores)
+  const RENOMBRADOS = { umeca:'libertad' };
   (b.chips||[]).forEach(k=>{
+    if(k==='umeca') medidas.add('umeca');
+    k = RENOMBRADOS[k] || k;
     const chip = document.querySelector(`.chip[data-k="${k}"]`);
     if(chip){ sel.add(k); chip.classList.add('on'); }
   });
+  (b.medidas||[]).forEach(m=>{ if(MEDIDAS_TEXTO[m]) medidas.add(m); });
   delitos = Array.isArray(b.delitos) ? b.delitos : [];
   recesos = Array.isArray(b.recesos) ? b.recesos : [];
   pintarDelitos();
@@ -903,6 +1097,27 @@ document.querySelectorAll('.chip[data-k]').forEach(c=>{
   c.addEventListener('click',()=>toggleChip(c));
   c.addEventListener('keydown',e=>{
     if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggleChip(c); }
+  });
+});
+
+document.getElementById('btnMasRes').addEventListener('click',()=>{
+  abrirMasRes(document.getElementById('masRes').hidden);
+});
+
+// Medidas de "Libertad con medidas cautelares": selección múltiple
+function toggleMedida(c){
+  const m = c.dataset.mc;
+  if(medidas.has(m)) medidas.delete(m); else medidas.add(m);
+  actualizarSubBloques();
+  construirResolucion();
+}
+document.querySelectorAll('.chip[data-mc]').forEach(c=>{
+  c.setAttribute('role','button');
+  c.setAttribute('aria-pressed','false');
+  c.tabIndex = 0;
+  c.addEventListener('click',()=>toggleMedida(c));
+  c.addEventListener('keydown',e=>{
+    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggleMedida(c); }
   });
 });
 
@@ -984,7 +1199,8 @@ document.querySelectorAll('.btn-x').forEach(b=>{
 });
 
 document.getElementById('juez').addEventListener('change',construirResolucion);
-['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt']
+['dupHora','dupFecha','mesesNum','prorrogaNum','penaTxt','reproTxt','otraResTxt','mcOtraTxt','scpPlazo',
+ 'modmcTxt','tecnicaTxt','sobreTipo','sobreDelito','penaJuicio']
   .forEach(id=>document.getElementById(id).addEventListener('input',construirResolucion));
 
 document.getElementById('oficial').addEventListener('change',e=>{
@@ -1072,6 +1288,9 @@ document.getElementById('btnLimpiar').addEventListener('click',()=>{
   });
   document.getElementById('juez').selectedIndex=0;
   sel.clear();
+  medidas.clear();
+  document.getElementById('sobreTipo').value = 'total';
+  abrirMasRes(false);
   document.querySelectorAll('.chip[data-k].on').forEach(c=>c.classList.remove('on'));
   delitos = [];
   recesos = [];
@@ -1111,8 +1330,9 @@ function centroActual(){
   return r ? (r.centros.find(c=>c.id===document.getElementById('centro').value) || null) : null;
 }
 
-// "J"/"M" (juez/magistrado) + "F"/"M" (género) -> "La Jueza", "El Magistrado", etc.
+// "J"/"M" (juez/magistrado) + "F"/"M" (género) -> "La Jueza", "El Magistrado", etc. "T" = tribunal colegiado
 function tratamiento(tipo, genero){
+  if(tipo==='T') return 'El Tribunal de Enjuiciamiento';
   if(tipo==='M') return genero==='M' ? 'El Magistrado' : 'La Magistrada';
   return genero==='M' ? 'El Juez' : 'La Jueza';
 }
@@ -1180,6 +1400,8 @@ function poblarJueces(c){
   } else {
     agregar(sel, c.jueces, 'J');
   }
+  // Juicio oral con tribunal colegiado: la resolución empieza con "El Tribunal de Enjuiciamiento"
+  sel.appendChild(nuevaOpcion('T::', 'Tribunal de Enjuiciamiento (colegiado)'));
 }
 
 function poblarOficiales(c){
